@@ -18,7 +18,7 @@
     specific language governing permissions and limitations
     under the License.
 
--->
+    -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -42,6 +42,43 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.8</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>**/BUILD.txt</exclude>
+            <exclude>**/CHANGES.txt</exclude>
+            <exclude>**/NOTICE-src.txt</exclude>
+            <exclude>**/README.md</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>**/.gitignore</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/*.log*</exclude>
+            <exclude>**/TODO</exclude>
+            <exclude>.mailmap</exclude>
+            <exclude>.idea/**</exclude>
+            <exclude>**/*.iml</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.checkstyle</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>.repository/**</exclude>
+            <!-- binary -->
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
         <version>1.9.0</version>
@@ -51,7 +88,7 @@
           <aggregate>true</aggregate>
           <header>project/src/etc/header.txt</header>
           <mapping>
-              <clj>SEMICOLON_STYLE</clj>
+            <clj>SEMICOLON_STYLE</clj>
           </mapping>
           <excludes>
             <exclude>**/src/**/resources/**</exclude>
