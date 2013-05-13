@@ -26,7 +26,7 @@
     <artifactId>oss-parent</artifactId>
     <version>4</version>
   </parent>
-  <groupId>org.jclouds.chef</groupId>
+  <groupId>org.apache.jclouds.chef</groupId>
   <artifactId>chef-parent</artifactId>
   <version>1.6.1-SNAPSHOT</version>
   <packaging>pom</packaging>
