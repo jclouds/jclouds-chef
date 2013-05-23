@@ -44,10 +44,14 @@
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
   </properties>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.apache.org/jira/browse/JCLOUDS</url>
+  </issueManagement>
   <scm>
-    <connection>scm:git:git://github.com/jclouds/jclouds-chef.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/jclouds/jclouds-chef.git</developerConnection>
-    <url>http://github.com/jclouds/jclouds-chef</url>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-jclouds-chef.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-jclouds-chef.git</developerConnection>
+    <url>https://git-wip-us.apache.org/repos/asf?p=incubator-jclouds-chef.git</url>
     <tag>HEAD</tag>
   </scm>
   <repositories>
