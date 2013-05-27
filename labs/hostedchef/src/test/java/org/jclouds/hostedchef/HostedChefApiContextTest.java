@@ -52,7 +52,7 @@ public class HostedChefApiContextTest {
    }
 
    public void testCanAccessHostedChefApi() {
-      HostedChefApi api = context.getApi(HostedChefApi.class);
+      HostedChefApi api = context.unwrapApi(HostedChefApi.class);
       assertNotNull(api);
    }
 

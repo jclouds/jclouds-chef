@@ -33,6 +33,7 @@ import java.util.List;
 import org.jclouds.chef.ChefApi;
 import org.jclouds.chef.ChefContext;
 import org.jclouds.chef.compute.internal.BaseComputeServiceIntegratedChefClientLiveTest;
+import org.jclouds.chef.domain.BootstrapConfig;
 import org.jclouds.chef.domain.CookbookVersion;
 import org.jclouds.chef.util.RunListBuilder;
 import org.jclouds.compute.RunNodesException;
@@ -64,7 +65,8 @@ public class ChefComputeServiceLiveTest extends BaseComputeServiceIntegratedChef
 
       if (any(cookbookVersions, containsRecipe(recipe))) {
          List<String> runList = new RunListBuilder().addRecipe(recipe).build();
-         view.getChefService().updateBootstrapConfigForGroup(runList, group);
+         BootstrapConfig bootstrap = BootstrapConfig.builder().runList(runList).build();
+         view.getChefService().updateBootstrapConfigForGroup(group, bootstrap);
          assertEquals(view.getChefService().getRunListForGroup(group), runList);
       } else {
          assert false : String.format("recipe %s not in %s", recipe, cookbookVersions);
@@ -105,7 +107,7 @@ public class ChefComputeServiceLiveTest extends BaseComputeServiceIntegratedChef
       }
       if (context != null) {
          view.getChefService().cleanupStaleNodesAndClients(group + "-", 1);
-         ChefApi api = view.getApi(ChefApi.class);
+         ChefApi api = view.unwrapApi(ChefApi.class);
          if (clientName != null && api.clientExists(clientName)) {
             api.deleteClient(clientName);
          }

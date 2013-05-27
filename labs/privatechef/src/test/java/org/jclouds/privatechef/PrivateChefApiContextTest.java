@@ -52,7 +52,7 @@ public class PrivateChefApiContextTest {
    }
 
    public void testCanAccessPrivateChefApi() {
-      PrivateChefApi api = context.getApi(PrivateChefApi.class);
+      PrivateChefApi api = context.unwrapApi(PrivateChefApi.class);
       assertNotNull(api);
    }
 

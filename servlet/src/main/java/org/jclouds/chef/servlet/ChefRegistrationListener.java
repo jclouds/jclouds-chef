@@ -93,7 +93,7 @@ public class ChefRegistrationListener implements ServletContextListener {
    }
 
    private String findNextNodeName(ChefService client, String pattern) {
-      ChefApi api = client.getContext().getApi(ChefApi.class);
+      ChefApi api = client.getContext().unwrapApi(ChefApi.class);
       Set<String> nodes = api.listNodes();
       String nodeName;
       Set<String> names = newHashSet(nodes);
