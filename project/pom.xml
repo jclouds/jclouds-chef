@@ -44,6 +44,7 @@
     <jclouds.version>1.6.1-SNAPSHOT</jclouds.version>
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
+    <sourceReleaseAssemblyDescriptor>source-release-zip-tar</sourceReleaseAssemblyDescriptor>
   </properties>
   <issueManagement>
     <system>JIRA</system>
@@ -111,9 +112,11 @@
       <plugins>
         <plugin>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.3.1</version>
+          <version>2.4</version>
           <configuration>
-            <releaseProfiles>doc</releaseProfiles>
+            <useReleaseProfile>false</useReleaseProfile>
+            <goals>deploy</goals>
+            <arguments>-Pdoc -Papache-release ${arguments}</arguments>
           </configuration>
         </plugin>
         <plugin>
