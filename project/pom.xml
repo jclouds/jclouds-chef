@@ -200,7 +200,6 @@
         <version>1.3</version>
         <executions>
           <execution>
-            <id>process-remote-resources</id>
             <goals>
               <goal>process</goal>
             </goals>
@@ -406,7 +405,6 @@
             <version>1.3</version>
             <executions>
               <execution>
-                <id>process-remote-resources</id>
                 <goals>
                   <goal>process</goal>
                 </goals>
