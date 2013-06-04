@@ -33,7 +33,6 @@
   <modules>
     <module>project</module>
     <module>core</module>
-    <module>servlet</module>
     <module>compute</module>
     <module>labs</module>
   </modules>
