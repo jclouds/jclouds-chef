@@ -160,6 +160,7 @@
             <exclude>**/CHANGES.txt</exclude>
             <exclude>**/README.md</exclude>
             <exclude>**/README.txt</exclude>
+            <exclude>**/DEPENDENCIES</exclude>
 
             <!-- one-line service registry files -->
             <exclude>**/*ProviderMetadata</exclude>
