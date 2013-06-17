@@ -26,7 +26,7 @@
     <relativePath>project/pom.xml</relativePath>
   </parent>
   <artifactId>jclouds-chef</artifactId>
-  <name>JClouds Chef :: Project POM</name>
+  <name>Apache jclouds Chef :: Project POM</name>
   <description>JClouds Chef top level project pom for builds</description>
   <packaging>pom</packaging>
 
