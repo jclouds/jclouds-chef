@@ -30,16 +30,15 @@
   <packaging>pom</packaging>
   <name>JClouds Chef :: Parent POM</name>
   <description>JClouds Chef Parent POM for Maven configuration</description>
+
   <licenses>
     <license>
-      <name>Apache License</name>
-      <url>../resources/LICENSE.txt</url>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
-  <organization>
-    <name>jclouds</name>
-    <url>http://www.jclouds.org/</url>
-  </organization>
+
   <properties>
     <jclouds.version>1.6.1-incubating</jclouds.version>
     <maven.compile.source>1.6</maven.compile.source>
