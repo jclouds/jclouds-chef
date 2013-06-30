@@ -28,6 +28,7 @@ import java.security.PrivateKey;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,6 +58,8 @@ import com.google.inject.TypeLiteral;
  */
 @Singleton
 public class GroupToBootScript implements Function<String, Statement> {
+   private static final Pattern newLinePattern = Pattern.compile("(\\r\\n)|(\\n)");
+
    @VisibleForTesting
    static final Type RUN_LIST_TYPE = new TypeLiteral<Map<String, List<String>>>() {
    }.getType();
@@ -101,7 +104,7 @@ public class GroupToBootScript implements Function<String, Statement> {
             String.format("chef_server_url \"%s\"", endpoint.get())));
 
       Statement createValidationPem = appendFile(chefConfigDir + "{fs}validation.pem",
-            Splitter.on('\n').split(Pems.pem(validatorKey)));
+            Splitter.on(newLinePattern).split(Pems.pem(validatorKey)));
 
       String chefBootFile = chefConfigDir + "{fs}first-boot.json";
 
