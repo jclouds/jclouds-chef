@@ -73,13 +73,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds</groupId>
-      <artifactId>jclouds-compute</artifactId>
-      <version>${jclouds.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jclouds</groupId>
       <artifactId>jclouds-allcompute</artifactId>
       <version>${jclouds.version}</version>
       <scope>test</scope>
