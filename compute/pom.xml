@@ -21,13 +21,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jclouds.chef</groupId>
-    <artifactId>chef-parent</artifactId>
+    <artifactId>chef-project</artifactId>
     <version>1.6.3-SNAPSHOT</version>
     <relativePath>../project/pom.xml</relativePath>
   </parent>
   <artifactId>chef-compute</artifactId>
-  <name>JClouds Chef :: Compute</name>
-  <description>provisions nodes with jclouds and kick's off chef to configure and integrate</description>
+  <name>Apache jclouds Chef :: Compute</name>
+  <description>Provisions nodes with jclouds and kicks off Chef to configure and integrate</description>
   <properties>
     <test.chef.endpoint>http://localhost:4000</test.chef.endpoint>
     <test.chef.api-version />
