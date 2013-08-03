@@ -27,7 +27,7 @@
   </parent>
   <artifactId>chef-compute</artifactId>
   <name>Apache jclouds Chef :: Compute</name>
-  <description>provisions nodes with jclouds and kick's off chef to configure and integrate</description>
+  <description>Provisions nodes with jclouds and kicks off Chef to configure and integrate</description>
   <properties>
     <test.chef.endpoint>http://localhost:4000</test.chef.endpoint>
     <test.chef.api-version />
