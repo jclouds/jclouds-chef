@@ -34,7 +34,7 @@
     <module>project</module>
     <module>core</module>
     <module>compute</module>
-    <module>labs</module>
+    <module>enterprise</module>
   </modules>
   <build>
     <plugins>
