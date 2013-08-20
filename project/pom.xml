@@ -28,7 +28,7 @@
   <artifactId>chef-project</artifactId>
   <version>1.7.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Apache jclouds Chef :: Project POM</name>
+  <name>Apache jclouds Chef :: Project</name>
   <description>jclouds Chef parent POM for Maven configuration</description>
 
   <licenses>
