@@ -16,31 +16,70 @@
  */
 package org.jclouds.chef.domain;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.beans.ConstructorProperties;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
+import org.jclouds.javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * An upload sandbox.
  * 
  * @author Adrian Cole
+ * @author Ignasi Barrera
  */
 public class UploadSandbox {
+   public static Builder builder() {
+      return new Builder();
+   }
+
+   public static class Builder {
+      private URI uri;
+      private ImmutableMap.Builder<List<Byte>, ChecksumStatus> checksums = ImmutableMap.builder();
+      private String sandboxId;
+
+      public Builder uri(URI uri) {
+         this.uri = checkNotNull(uri, "uri");
+         return this;
+      }
+
+      public Builder checksum(List<Byte> key, ChecksumStatus value) {
+         this.checksums.put(checkNotNull(key, "key"), checkNotNull(value, "value"));
+         return this;
+      }
+
+      public Builder checksums(Map<List<Byte>, ChecksumStatus> checksums) {
+         this.checksums.putAll(checkNotNull(checksums, "checksums"));
+         return this;
+      }
+
+      public Builder sandboxId(String sandboxId) {
+         this.sandboxId = checkNotNull(sandboxId, "sandboxId");
+         return this;
+      }
+
+      public UploadSandbox build() {
+         return new UploadSandbox(uri, checksums.build(), sandboxId);
+      }
+   }
+
    private URI uri;
-   private Map<List<Byte>, ChecksumStatus> checksums = Maps.newLinkedHashMap();
+   private Map<List<Byte>, ChecksumStatus> checksums;
    @SerializedName("sandbox_id")
    private String sandboxId;
 
-   public UploadSandbox(URI uri, Map<List<Byte>, ChecksumStatus> checksums, String sandboxId) {
+   @ConstructorProperties({ "uri", "checksums", "sandbox_id" })
+   protected UploadSandbox(URI uri, @Nullable Map<List<Byte>, ChecksumStatus> checksums, String sandboxId) {
       this.uri = uri;
-      this.checksums.putAll(checksums);
+      this.checksums = checksums == null ? ImmutableMap.<List<Byte>, ChecksumStatus> of() : ImmutableMap
+            .copyOf(checksums);
       this.sandboxId = sandboxId;
-   }
-
-   public UploadSandbox() {
-
    }
 
    public URI getUri() {
@@ -94,8 +133,7 @@ public class UploadSandbox {
 
    @Override
    public String toString() {
-      return "UploadSite [checksums=" + checksums + ", id=" + sandboxId + ", uri=" + uri + "]";
+      return "UploadSandbox [checksums=" + checksums + ", id=" + sandboxId + ", uri=" + uri + "]";
    }
 
 }
-

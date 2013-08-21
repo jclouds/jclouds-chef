@@ -16,34 +16,168 @@
  */
 package org.jclouds.chef.domain;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.beans.ConstructorProperties;
 import java.util.Set;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
+import org.jclouds.javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Cookbook object.
  * 
  * @author Adrian Cole
+ * @author Ignasi Barrera
  */
 public class CookbookVersion {
+   public static Builder builder() {
+      return new Builder();
+   }
+
+   public static class Builder {
+      private String cookbookName;
+      private ImmutableSet.Builder<Resource> definitions = ImmutableSet.builder();
+      private ImmutableSet.Builder<Attribute> attributes = ImmutableSet.builder();
+      private ImmutableSet.Builder<Resource> files = ImmutableSet.builder();
+      private Metadata metadata = Metadata.builder().build();
+      private ImmutableSet.Builder<Resource> providers = ImmutableSet.builder();
+      private ImmutableSet.Builder<Resource> resources = ImmutableSet.builder();
+      private ImmutableSet.Builder<Resource> templates = ImmutableSet.builder();
+      private ImmutableSet.Builder<Resource> libraries = ImmutableSet.builder();
+      private String version;
+      private ImmutableSet.Builder<Resource> recipes = ImmutableSet.builder();
+      private ImmutableSet.Builder<Resource> rootFiles = ImmutableSet.builder();
+
+      public Builder cookbookName(String cookbookName) {
+         this.cookbookName = checkNotNull(cookbookName, "cookbookName");
+         return this;
+      }
+
+      public Builder definition(Resource definition) {
+         this.definitions.add(checkNotNull(definition, "definition"));
+         return this;
+      }
+
+      public Builder definitions(Iterable<Resource> definitions) {
+         this.definitions.addAll(checkNotNull(definitions, "definitions"));
+         return this;
+      }
+
+      public Builder attribute(Attribute attribute) {
+         this.attributes.add(checkNotNull(attribute, "attribute"));
+         return this;
+      }
+
+      public Builder attributes(Iterable<Attribute> attributes) {
+         this.attributes.addAll(checkNotNull(attributes, "attributes"));
+         return this;
+      }
+
+      public Builder file(Resource file) {
+         this.files.add(checkNotNull(file, "file"));
+         return this;
+      }
+
+      public Builder files(Iterable<Resource> files) {
+         this.files.addAll(checkNotNull(files, "files"));
+         return this;
+      }
+
+      public Builder metadata(Metadata metadata) {
+         this.metadata = checkNotNull(metadata, "metadata");
+         return this;
+      }
+
+      public Builder provider(Resource provider) {
+         this.providers.add(checkNotNull(provider, "provider"));
+         return this;
+      }
+
+      public Builder providers(Iterable<Resource> providers) {
+         this.providers.addAll(checkNotNull(providers, "providers"));
+         return this;
+      }
+
+      public Builder resource(Resource resource) {
+         this.resources.add(checkNotNull(resource, "resource"));
+         return this;
+      }
+
+      public Builder resources(Iterable<Resource> resources) {
+         this.resources.addAll(checkNotNull(resources, "resources"));
+         return this;
+      }
+
+      public Builder template(Resource template) {
+         this.templates.add(checkNotNull(template, "template"));
+         return this;
+      }
+
+      public Builder templates(Iterable<Resource> templates) {
+         this.templates.addAll(checkNotNull(templates, "templates"));
+         return this;
+      }
+
+      public Builder library(Resource library) {
+         this.libraries.add(checkNotNull(library, "library"));
+         return this;
+      }
+
+      public Builder libraries(Iterable<Resource> libraries) {
+         this.libraries.addAll(checkNotNull(libraries, "libraries"));
+         return this;
+      }
+
+      public Builder version(String version) {
+         this.version = checkNotNull(version, "version");
+         return this;
+      }
+
+      public Builder recipe(Resource recipe) {
+         this.recipes.add(checkNotNull(recipe, "recipe"));
+         return this;
+      }
+
+      public Builder recipes(Iterable<Resource> recipes) {
+         this.recipes.addAll(checkNotNull(recipes, "recipes"));
+         return this;
+      }
+
+      public Builder rootFile(Resource rootFile) {
+         this.rootFiles.add(checkNotNull(rootFile, "rootFile"));
+         return this;
+      }
+
+      public Builder rootFiles(Iterable<Resource> rootFiles) {
+         this.rootFiles.addAll(checkNotNull(rootFiles, "rootFiles"));
+         return this;
+      }
+
+      public CookbookVersion build() {
+         return new CookbookVersion(checkNotNull(cookbookName, "name") + "-" + checkNotNull(version, "version"),
+               definitions.build(), attributes.build(), files.build(), metadata, providers.build(), cookbookName,
+               resources.build(), templates.build(), libraries.build(), version, recipes.build(), rootFiles.build());
+      }
+   }
 
    private String name;
-   private Set<Resource> definitions = Sets.newLinkedHashSet();
-   private Set<Attribute> attributes = Sets.newLinkedHashSet();
-   private Set<Resource> files = Sets.newLinkedHashSet();
-   private Metadata metadata = new Metadata();
-   private Set<Resource> providers = Sets.newLinkedHashSet();
+   private Set<Resource> definitions;
+   private Set<Attribute> attributes;
+   private Set<Resource> files;
+   private Metadata metadata;
+   private Set<Resource> providers;
    @SerializedName("cookbook_name")
    private String cookbookName;
-   private Set<Resource> resources = Sets.newLinkedHashSet();
-   private Set<Resource> templates = Sets.newLinkedHashSet();
-   private Set<Resource> libraries = Sets.newLinkedHashSet();
+   private Set<Resource> resources;
+   private Set<Resource> templates;
+   private Set<Resource> libraries;
    private String version;
-   private Set<Resource> recipes = Sets.newLinkedHashSet();
+   private Set<Resource> recipes;
    @SerializedName("root_files")
-   private Set<Resource> rootFiles = Sets.newLinkedHashSet();
+   private Set<Resource> rootFiles;
 
    // internal
    @SerializedName("json_class")
@@ -51,34 +185,25 @@ public class CookbookVersion {
    @SerializedName("chef_type")
    private String _chefType = "cookbook_version";
 
-   public CookbookVersion(String cookbookName, String version) {
-      this.cookbookName = cookbookName;
-      this.version = version;
-      this.name = cookbookName + "-" + version;
-   }
-
-   public CookbookVersion(String name, Set<Resource> definitions, Set<Attribute> attributes, Set<Resource> files,
-         Metadata metadata, Set<Resource> providers, String cookbookName, Set<Resource> resources,
-         Set<Resource> templates, Set<Resource> libraries, String version, Set<Resource> recipes,
-         Set<Resource> rootFiles) {
+   @ConstructorProperties({ "name", "definitions", "attributes", "files", "metadata", "providers", "cookbook_name",
+         "resources", "templates", "libraries", "version", "recipes", "root_files" })
+   protected CookbookVersion(String name, @Nullable Set<Resource> definitions, @Nullable Set<Attribute> attributes,
+         @Nullable Set<Resource> files, Metadata metadata, @Nullable Set<Resource> providers, String cookbookName,
+         @Nullable Set<Resource> resources, @Nullable Set<Resource> templates, @Nullable Set<Resource> libraries,
+         String version, @Nullable Set<Resource> recipes, @Nullable Set<Resource> rootFiles) {
       this.name = name;
-      Iterables.addAll(this.definitions, definitions);
-      Iterables.addAll(this.attributes, attributes);
-      Iterables.addAll(this.files, files);
+      this.definitions = definitions == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(definitions);
+      this.attributes = attributes == null ? ImmutableSet.<Attribute> of() : ImmutableSet.copyOf(attributes);
+      this.files = files == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(files);
       this.metadata = metadata;
-      Iterables.addAll(this.providers, providers);
+      this.providers = providers == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(providers);
       this.cookbookName = cookbookName;
-      Iterables.addAll(this.resources, resources);
-      Iterables.addAll(this.templates, templates);
-      Iterables.addAll(this.libraries, libraries);
+      this.resources = resources == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(resources);
+      this.templates = templates == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(templates);
+      this.libraries = libraries == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(libraries);
       this.version = version;
-      Iterables.addAll(this.recipes, recipes);
-      Iterables.addAll(this.rootFiles, rootFiles);
-   }
-
-   // hidden but needs to be here for json deserialization to work
-   CookbookVersion() {
-
+      this.recipes = recipes == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(recipes);
+      this.rootFiles = rootFiles == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(rootFiles);
    }
 
    public String getName() {

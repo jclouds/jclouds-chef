@@ -17,6 +17,7 @@
 package org.jclouds.chef.internal;
 
 import static com.google.common.base.Throwables.propagate;
+import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.hash.Hashing.md5;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.jclouds.io.ByteSources.asByteSource;
@@ -25,6 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +42,7 @@ import org.jclouds.chef.domain.Client;
 import org.jclouds.chef.domain.CookbookVersion;
 import org.jclouds.chef.domain.DatabagItem;
 import org.jclouds.chef.domain.Environment;
+import org.jclouds.chef.domain.Metadata;
 import org.jclouds.chef.domain.Node;
 import org.jclouds.chef.domain.Resource;
 import org.jclouds.chef.domain.Role;
@@ -78,70 +81,89 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    protected DatabagItem databagItem;
 
    public void testCreateNewCookbook() throws Exception {
-
-      // define the file you want in the cookbook
+      // Define the file you want in the cookbook
       FilePayload content = Payloads.newFilePayload(new File(System.getProperty("user.dir"), "pom.xml"));
       content.getContentMetadata().setContentType("application/x-binary");
 
-      // get an md5 so that you can see if the server already has it or not
+      // Get an md5 so that you can see if the server already has it or not
       Payloads.calculateMD5(content);
 
       // Note that java collections cannot effectively do equals or hashcodes on
-      // byte arrays,
-      // so let's convert to a list of bytes.
+      // byte arrays, so let's convert to a list of bytes.
       List<Byte> md5 = Bytes.asList(content.getContentMetadata().getContentMD5());
 
-      // request an upload site for this file
+      // Request an upload site for this file
       UploadSandbox site = api.getUploadSandboxForChecksums(ImmutableSet.of(md5));
+      assertTrue(site.getChecksums().containsKey(md5), md5 + " not in " + site.getChecksums());
 
       try {
-         assert site.getChecksums().containsKey(md5) : md5 + " not in " + site.getChecksums();
-
+         // Upload the file contents, if still not uploaded
          ChecksumStatus status = site.getChecksums().get(md5);
          if (status.needsUpload()) {
-            // context.utils().http().put(status.getUrl(), content);
             api.uploadContent(status.getUrl(), content);
          }
-
          api.commitSandbox(site.getSandboxId(), true);
-
       } catch (RuntimeException e) {
          api.commitSandbox(site.getSandboxId(), false);
+         fail("Could not upload content");
       }
 
-      // create a new cookbook
-      CookbookVersion cookbook = new CookbookVersion(PREFIX, "0.0.0");
-      cookbook.getRootFiles().add(new Resource(content));
+      // Create the metadata of the cookbook
+      Metadata metadata = Metadata.builder() //
+            .name(PREFIX) //
+            .version("0.0.0") //
+            .description("Jclouds test uploaded cookbook") //
+            .maintainer("jclouds") //
+            .maintainerEmail("someone@jclouds.org") //
+            .license("Apache 2.0") //
+            .build();
+
+      // Create a new cookbook
+      CookbookVersion cookbook = CookbookVersion.builder() //
+            .cookbookName(PREFIX) //
+            .version("0.0.0") //
+            .metadata(metadata).rootFile(Resource.builder().fromPayload(content).build()) //
+            .build();
 
       // upload the cookbook to the remote server
       api.updateCookbook(PREFIX, "0.0.0", cookbook);
    }
 
-   @Test(dependsOnMethods = "testCreateClient")
-   public void testGenerateKeyForClient() throws Exception {
-      String credential = Pems.pem(api.generateKeyForClient(PREFIX).getPrivateKey());
-      assertClientCreated(PREFIX, credential);
-   }
-
-   @Test
    public void testListCookbooks() throws Exception {
       Set<String> cookbookNames = api.listCookbooks();
       assertFalse(cookbookNames.isEmpty());
 
-      for (String cookbook : cookbookNames) {
-         for (String version : api.getVersionsOfCookbook(cookbook)) {
-            CookbookVersion cookbookO = api.getCookbook(cookbook, version);
-            for (Resource resource : ImmutableList.<Resource> builder().addAll(cookbookO.getDefinitions())
-                  .addAll(cookbookO.getFiles()).addAll(cookbookO.getLibraries()).addAll(cookbookO.getSuppliers())
-                  .addAll(cookbookO.getRecipes()).addAll(cookbookO.getResources()).addAll(cookbookO.getRootFiles())
-                  .addAll(cookbookO.getTemplates()).build()) {
-               try {
-                  InputStream stream = api.getResourceContents(resource);
-                  byte[] md5 = asByteSource(stream).hash(md5()).asBytes();
-                  assertEquals(md5, resource.getChecksum());
-               } catch (NullPointerException e) {
-                  assert false : "resource not found: " + resource;
-               }
+      for (String cookbookName : cookbookNames) {
+         Set<String> versions = api.getVersionsOfCookbook(cookbookName);
+         assertFalse(versions.isEmpty());
+
+         for (String version : api.getVersionsOfCookbook(cookbookName)) {
+            CookbookVersion cookbook = api.getCookbook(cookbookName, version);
+            assertNotNull(cookbook);
+         }
+      }
+   }
+
+   @Test(dependsOnMethods = "testListCookbooks")
+   public void testListCookbookVersionsWithChefService() throws Exception {
+      Iterable<? extends CookbookVersion> cookbooks = chefService.listCookbookVersions();
+      assertFalse(isEmpty(cookbooks));
+   }
+
+   @Test(dependsOnMethods = "testListCookbookVersionsWithChefService")
+   public void testDownloadCookbooks() throws Exception {
+      Iterable<? extends CookbookVersion> cookbooks = chefService.listCookbookVersions();
+      for (CookbookVersion cookbook : cookbooks) {
+         for (Resource resource : ImmutableList.<Resource> builder().addAll(cookbook.getDefinitions())
+               .addAll(cookbook.getFiles()).addAll(cookbook.getLibraries()).addAll(cookbook.getSuppliers())
+               .addAll(cookbook.getRecipes()).addAll(cookbook.getResources()).addAll(cookbook.getRootFiles())
+               .addAll(cookbook.getTemplates()).build()) {
+            try {
+               InputStream stream = api.getResourceContents(resource);
+               byte[] md5 = asByteSource(stream).hash(md5()).asBytes();
+               assertEquals(md5, resource.getChecksum());
+            } catch (NullPointerException e) {
+               fail("resource not found: " + resource);
             }
          }
       }
@@ -150,6 +172,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(dependsOnMethods = "testCreateNewCookbook")
    public void testUpdateCookbook() throws Exception {
       CookbookVersion cookbook = api.getCookbook(PREFIX, "0.0.0");
+      assertNotNull(cookbook);
       assertNotNull(api.updateCookbook(PREFIX, "0.0.0", cookbook));
    }
 
@@ -172,9 +195,10 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
       assertClientCreated(ADMIN_PREFIX, credential);
    }
 
-   @Test
-   public void testClientExists() throws Exception {
-      assertNotNull(api.clientExists(identity));
+   @Test(dependsOnMethods = "testCreateClient")
+   public void testGenerateKeyForClient() throws Exception {
+      String credential = Pems.pem(api.generateKeyForClient(PREFIX).getPrivateKey());
+      assertClientCreated(PREFIX, credential);
    }
 
    @Test
@@ -186,20 +210,15 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(dependsOnMethods = "testCreateRole")
    public void testCreateNode() throws Exception {
       api.deleteNode(PREFIX);
-      api.createNode(new Node(PREFIX, Collections.singleton("role[" + PREFIX + "]"), "_default"));
+      api.createNode(Node.builder().name(PREFIX).runListElement("role[" + PREFIX + "]").environment("_default").build());
       node = api.getNode(PREFIX);
       // TODO check recipes
       assertNotNull(node);
       Set<String> nodes = api.listNodes();
-      assert nodes.contains(PREFIX) : String.format("node %s not in %s", PREFIX, nodes);
+      assertTrue(nodes.contains(PREFIX), String.format("node %s not in %s", PREFIX, nodes));
    }
 
    @Test(dependsOnMethods = "testCreateNode")
-   public void testNodeExists() throws Exception {
-      assertNotNull(api.nodeExists(PREFIX));
-   }
-
-   @Test(dependsOnMethods = "testNodeExists")
    public void testUpdateNode() throws Exception {
       for (String nodename : api.listNodes()) {
          Node node = api.getNode(nodename);
@@ -216,7 +235,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testCreateRole() throws Exception {
       api.deleteRole(PREFIX);
-      api.createRole(new Role(PREFIX, Collections.singleton("recipe[java]")));
+      api.createRole(Role.builder().name(PREFIX).runListElement("recipe[java]").build());
       role = api.getRole(PREFIX);
       assertNotNull(role);
       assertEquals(role.getName(), PREFIX);
@@ -224,11 +243,6 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    }
 
    @Test(dependsOnMethods = "testCreateRole")
-   public void testRoleExists() throws Exception {
-      assertNotNull(api.roleExists(PREFIX));
-   }
-
-   @Test(dependsOnMethods = "testRoleExists")
    public void testUpdateRole() throws Exception {
       for (String rolename : api.listRoles()) {
          Role role = api.getRole(rolename);
@@ -246,11 +260,6 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    public void testCreateDatabag() throws Exception {
       api.deleteDatabag(PREFIX);
       api.createDatabag(PREFIX);
-   }
-
-   @Test(dependsOnMethods = "testCreateDatabag")
-   public void testDatabagExists() throws Exception {
-      assertNotNull(api.databagExists(PREFIX));
    }
 
    @Test(dependsOnMethods = "testCreateDatabagItem")
@@ -278,11 +287,6 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    }
 
    @Test(dependsOnMethods = "testCreateDatabagItem")
-   public void testDatabagItemExists() throws Exception {
-      assertNotNull(api.databagItemExists(PREFIX, PREFIX));
-   }
-
-   @Test(dependsOnMethods = "testDatabagItemExists")
    public void testUpdateDatabagItem() throws Exception {
       for (String databagItemId : api.listDatabagItems(PREFIX)) {
          DatabagItem databagItem = api.getDatabagItem(PREFIX, databagItemId);
@@ -294,9 +298,9 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    public void testListSearchIndexes() throws Exception {
       Set<String> indexes = api.listSearchIndexes();
       assertNotNull(indexes);
-      assert indexes.contains("node") : indexes;
-      assert indexes.contains("client") : indexes;
-      assert indexes.contains("role") : indexes;
+      assertTrue(indexes.contains("node"));
+      assertTrue(indexes.contains("client"));
+      assertTrue(indexes.contains("role"));
    }
 
    @Test
@@ -383,13 +387,13 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
       assertTrue(waitForIndex.apply(options));
    }
 
-   @Test(dependsOnMethods = { "testListSearchIndexes", "testDatabagItemExists" })
+   @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateDatabagItem" })
    public void testSearchDatabag() throws Exception {
       SearchResult<? extends DatabagItem> results = api.searchDatabag(PREFIX);
       assertNotNull(results);
    }
 
-   @Test(dependsOnMethods = { "testListSearchIndexes", "testDatabagItemExists" })
+   @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateDatabagItem" })
    public void testSearchDatabagWithOptions() throws Exception {
       Predicate<SearchOptions> waitForIndex = retry(new Predicate<SearchOptions>() {
          @Override
@@ -420,7 +424,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testCreateEnvironment() {
       api.deleteEnvironment(PREFIX);
-      api.createEnvironment(new Environment(PREFIX, PREFIX));
+      api.createEnvironment(Environment.builder().name(PREFIX).description(PREFIX).build());
       Environment env = api.getEnvironment(PREFIX);
       assertNotNull(env);
       assertEquals(env.getName(), PREFIX);
@@ -460,12 +464,6 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
 
       SearchOptions options = SearchOptions.Builder.query("name:" + PREFIX);
       assertTrue(waitForIndex.apply(options));
-   }
-
-   @Test
-   public void testListCookbookVersionsWithChefService() throws Exception {
-      Iterable<? extends CookbookVersion> cookbooks = chefService.listCookbookVersions();
-      assertNotNull(cookbooks);
    }
 
    @AfterClass(groups = { "live", "integration" })

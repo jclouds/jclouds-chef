@@ -108,7 +108,7 @@ public class ChefComputeServiceLiveTest extends BaseComputeServiceIntegratedChef
       if (context != null) {
          view.getChefService().cleanupStaleNodesAndClients(group + "-", 1);
          ChefApi api = view.unwrapApi(ChefApi.class);
-         if (clientName != null && api.clientExists(clientName)) {
+         if (clientName != null && api.getClient(clientName) != null) {
             api.deleteClient(clientName);
          }
          context.close();

@@ -21,11 +21,13 @@ import java.util.LinkedHashSet;
 import com.google.common.collect.Iterables;
 
 /**
+ * A result of a search.
  * 
  * @author Adrian Cole
- * 
+ * @author Ignasi Barrera
  */
 public class SearchResult<T> extends LinkedHashSet<T> {
+   private static final long serialVersionUID = 4000610660948065287L;
    private long start;
 
    SearchResult() {
@@ -35,8 +37,6 @@ public class SearchResult<T> extends LinkedHashSet<T> {
       this.start = start;
       Iterables.addAll(this, results);
    }
-
-   private static final long serialVersionUID = 4000610660948065287L;
 
    /**
     * 

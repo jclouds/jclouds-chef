@@ -26,13 +26,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.jclouds.chef.internal.BaseChefApiLiveTest;
-import org.jclouds.enterprisechef.EnterpriseChefApi;
 import org.jclouds.enterprisechef.domain.Group;
 import org.jclouds.enterprisechef.domain.User;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.testng.annotations.Test;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Tests behavior of the EnterpriseChefApi.
@@ -90,10 +87,17 @@ public class EnterpriseChefApiLiveTest extends BaseChefApiLiveTest<EnterpriseChe
    @Test(dependsOnMethods = "testCreateGroup")
    public void testUpdateGroup() {
       Group group = api.getGroup(GROUP_NAME);
-      group.setUsers(ImmutableSet.of(identity));
-      group.setClients(ImmutableSet.of(ORG_NAME + "-validator"));
+      Group updated = Group.builder() //
+            .actors(group.getActors()) //
+            .orgname(group.getOrgname()) //
+            .groupname(group.getGroupname()) //
+            .name(group.getName()) //
+            .groups(group.getGroups()) //
+            .client(ORG_NAME + "-validator") //
+            .user(identity) //
+            .build();
 
-      api.updateGroup(group);
+      api.updateGroup(updated);
       group = api.getGroup(GROUP_NAME);
 
       assertNotNull(group);
@@ -103,7 +107,7 @@ public class EnterpriseChefApiLiveTest extends BaseChefApiLiveTest<EnterpriseChe
 
    @Test(expectedExceptions = ResourceNotFoundException.class)
    public void testUpdateUnexistingGroup() {
-      api.updateGroup(new Group(UUID.randomUUID().toString()));
+      api.updateGroup(Group.builder().groupname(UUID.randomUUID().toString()).build());
    }
 
    @Test(dependsOnMethods = "testUpdateGroup")
