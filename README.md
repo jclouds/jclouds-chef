@@ -8,7 +8,7 @@ This is the jclouds Chef api. It provides access to the different flavours of th
 * [Chef community](http://www.opscode.com/chef/)
 * [Enterprise Chef](http://www.opscode.com/enterprise-chef/)
 
-It currently supports versions **0.9** and **0.10** of the standard Chef server apis, and an initial
+It currently supports versions **0.9**, **0.10** and **11** of the standard Chef server apis, and an initial
 and very basic (still in progress) implementation of the user and organization api of the Enterprise Chef.
 
 Also provides a set of utility methods to combine Chef features with the jclouds Compute service, allowing
