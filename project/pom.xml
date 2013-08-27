@@ -25,11 +25,11 @@
     <version>13</version>
   </parent>
   <groupId>org.apache.jclouds.chef</groupId>
-  <artifactId>chef-parent</artifactId>
+  <artifactId>chef-project</artifactId>
   <version>1.6.3-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>JClouds Chef :: Parent POM</name>
-  <description>JClouds Chef Parent POM for Maven configuration</description>
+  <name>Apache jclouds Chef :: Project POM</name>
+  <description>jclouds Chef parent POM for Maven configuration</description>
 
   <licenses>
     <license>
