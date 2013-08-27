@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jclouds.chef</groupId>
-    <artifactId>chef-project</artifactId>
+    <artifactId>chef-parent</artifactId>
     <version>1.6.3-SNAPSHOT</version>
     <relativePath>../project/pom.xml</relativePath>
   </parent>
   <groupId>org.apache.jclouds.api</groupId>
   <artifactId>chef</artifactId>
   <packaging>bundle</packaging>
-  <name>Apache jclouds Chef :: Core</name>
+  <name>JClouds Chef :: Core</name>
   <description>jclouds components to access Chef</description>
 
   <properties>
