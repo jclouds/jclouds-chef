@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.net.URI;
@@ -60,13 +61,13 @@ public class CookbookDefinition {
       }
    }
 
-   private URI url;
-   private Set<Version> versions;
+   private final URI url;
+   private final Set<Version> versions;
 
    @ConstructorProperties({ "url", "versions" })
    protected CookbookDefinition(URI url, @Nullable Set<Version> versions) {
       this.url = url;
-      this.versions = versions == null ? ImmutableSet.<Version> of() : ImmutableSet.copyOf(versions);
+      this.versions = copyOfOrEmpty(versions);
    }
 
    public URI getUrl() {
@@ -137,8 +138,8 @@ public class CookbookDefinition {
          }
       }
 
-      private URI url;
-      private String version;
+      private final URI url;
+      private final String version;
 
       @ConstructorProperties({ "url", "version" })
       protected Version(URI url, String version) {

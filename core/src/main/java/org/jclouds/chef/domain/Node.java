@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.util.List;
@@ -118,25 +119,25 @@ public class Node {
       }
    }
 
-   private String name;
+   private final String name;
    @SerializedName("normal")
-   private Map<String, JsonBall> normalAttributes;
+   private final Map<String, JsonBall> normalAttributes;
    @SerializedName("override")
-   private Map<String, JsonBall> overrideAttributes;
+   private final Map<String, JsonBall> overrideAttributes;
    @SerializedName("default")
-   private Map<String, JsonBall> defaultAttributes;
+   private final Map<String, JsonBall> defaultAttributes;
    @SerializedName("automatic")
-   private Map<String, JsonBall> automaticAttributes;
+   private final Map<String, JsonBall> automaticAttributes;
    @SerializedName("run_list")
-   private List<String> runList;
+   private final List<String> runList;
    @SerializedName("chef_environment")
-   private String environment;
+   private final String environment;
 
    // internal
    @SerializedName("json_class")
-   private String _jsonClass = "Chef::Node";
+   private final String _jsonClass = "Chef::Node";
    @SerializedName("chef_type")
-   private String _chefType = "node";
+   private final String _chefType = "node";
 
    @ConstructorProperties({ "name", "normal", "override", "default", "automatic", "run_list", "chef_environment" })
    protected Node(String name, @Nullable Map<String, JsonBall> normalAttributes,
@@ -144,15 +145,11 @@ public class Node {
          @Nullable Map<String, JsonBall> automaticAttributes, List<String> runList, @Nullable String environment) {
       this.name = name;
       this.environment = environment;
-      this.normalAttributes = normalAttributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap
-            .copyOf(normalAttributes);
-      this.overrideAttributes = overrideAttributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap
-            .copyOf(overrideAttributes);
-      this.defaultAttributes = defaultAttributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap
-            .copyOf(defaultAttributes);
-      this.automaticAttributes = automaticAttributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap
-            .copyOf(automaticAttributes);
-      this.runList = runList == null ? ImmutableList.<String> of() : ImmutableList.copyOf(runList);
+      this.normalAttributes = copyOfOrEmpty(normalAttributes);
+      this.overrideAttributes = copyOfOrEmpty(overrideAttributes);
+      this.defaultAttributes = copyOfOrEmpty(defaultAttributes);
+      this.automaticAttributes = copyOfOrEmpty(automaticAttributes);
+      this.runList = copyOfOrEmpty(runList);
    }
 
    public String getName() {
@@ -261,9 +258,9 @@ public class Node {
 
    @Override
    public String toString() {
-      return "Node [name=" + name + ", runList=" + runList + ", normal=" + normalAttributes + ", default="
-            + defaultAttributes + ", override=" + overrideAttributes + ", chefEnvironment=" + environment
-            + ", automatic=" + automaticAttributes + "]";
+      return "Node [name=" + name + ", runList=" + runList + ", normalAttributes=" + normalAttributes
+            + ", defaultAttributes=" + defaultAttributes + ", overrideAttributes=" + overrideAttributes
+            + ", chefEnvironment=" + environment + ", automaticAttributes=" + automaticAttributes + "]";
    }
 
 }

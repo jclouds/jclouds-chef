@@ -16,6 +16,7 @@
  */
 package org.jclouds.enterprisechef.domain;
 
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.beans.ConstructorProperties;
@@ -31,8 +32,8 @@ import com.google.common.collect.ImmutableSet;
  * @author Ignasi Barrera
  */
 public class Group {
-   public static Builder builder() {
-      return new Builder();
+   public static Builder builder(String groupname) {
+      return new Builder(groupname);
    }
 
    public static class Builder {
@@ -43,6 +44,10 @@ public class Group {
       private ImmutableSet.Builder<String> clients = ImmutableSet.builder();
       private ImmutableSet.Builder<String> groups = ImmutableSet.builder();
       private ImmutableSet.Builder<String> users = ImmutableSet.builder();
+
+      public Builder(String groupname) {
+         this.groupname = groupname;
+      }
 
       public Builder name(String name) {
          this.name = checkNotNull(name, "name");
@@ -100,17 +105,18 @@ public class Group {
       }
 
       public Group build() {
-         return new Group(name, checkNotNull(groupname, "groupame"), orgname, actors.build(), clients.build(), groups.build(), users.build());
+         return new Group(name, checkNotNull(groupname, "groupname"), orgname, actors.build(), clients.build(),
+               groups.build(), users.build());
       }
    }
 
-   private String name;
-   private String groupname;
-   private String orgname;
-   private Set<String> actors;
-   private Set<String> clients;
-   private Set<String> groups;
-   private Set<String> users;
+   private final String name;
+   private final String groupname;
+   private final String orgname;
+   private final Set<String> actors;
+   private final Set<String> clients;
+   private final Set<String> groups;
+   private final Set<String> users;
 
    @ConstructorProperties({ "name", "groupname", "orgname", "actors", "clients", "groups", "users" })
    public Group(String name, String groupname, String orgname, @Nullable Set<String> actors,
@@ -118,10 +124,10 @@ public class Group {
       this.name = name;
       this.groupname = groupname;
       this.orgname = orgname;
-      this.actors = actors == null ? ImmutableSet.<String> of() : ImmutableSet.copyOf(actors);
-      this.clients = clients == null ? ImmutableSet.<String> of() : ImmutableSet.copyOf(clients);
-      this.groups = groups == null ? ImmutableSet.<String> of() : ImmutableSet.copyOf(groups);
-      this.users = users == null ? ImmutableSet.<String> of() : ImmutableSet.copyOf(users);
+      this.actors = copyOfOrEmpty(actors);
+      this.clients = copyOfOrEmpty(clients);
+      this.groups = copyOfOrEmpty(groups);
+      this.users = copyOfOrEmpty(users);
    }
 
    public String getName() {

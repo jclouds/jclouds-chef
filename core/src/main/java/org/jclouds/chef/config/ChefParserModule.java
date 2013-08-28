@@ -254,8 +254,7 @@ public class ChefParserModule extends AbstractModule {
             K name = keyAdapter.read(in);
             V value = valueAdapter.read(in);
             if (value != null) {
-               // If there are repeated keys, only keep the last one
-               result.remove(name);
+               // If there are repeated keys, overwrite them to only keep the last one
                result.put(name, value);
             }
          }

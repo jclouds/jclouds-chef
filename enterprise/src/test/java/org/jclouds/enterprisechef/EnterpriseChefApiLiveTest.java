@@ -87,10 +87,9 @@ public class EnterpriseChefApiLiveTest extends BaseChefApiLiveTest<EnterpriseChe
    @Test(dependsOnMethods = "testCreateGroup")
    public void testUpdateGroup() {
       Group group = api.getGroup(GROUP_NAME);
-      Group updated = Group.builder() //
+      Group updated = Group.builder(group.getGroupname()) //
             .actors(group.getActors()) //
             .orgname(group.getOrgname()) //
-            .groupname(group.getGroupname()) //
             .name(group.getName()) //
             .groups(group.getGroups()) //
             .client(ORG_NAME + "-validator") //
@@ -107,7 +106,7 @@ public class EnterpriseChefApiLiveTest extends BaseChefApiLiveTest<EnterpriseChe
 
    @Test(expectedExceptions = ResourceNotFoundException.class)
    public void testUpdateUnexistingGroup() {
-      api.updateGroup(Group.builder().groupname(UUID.randomUUID().toString()).build());
+      api.updateGroup(Group.builder(UUID.randomUUID().toString()).build());
    }
 
    @Test(dependsOnMethods = "testUpdateGroup")

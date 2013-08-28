@@ -171,7 +171,7 @@ public class EnterpriseChefApiExpectTest extends BaseChefApiExpectTest<Enterpris
             .build()), //
             HttpResponse.builder().statusCode(200).build());
 
-      Group group = Group.builder().groupname("admins").client("abiquo").group("admins").user("nacx").build();
+      Group group = Group.builder("admins").client("abiquo").group("admins").user("nacx").build();
       api.updateGroup(group);
    }
 
@@ -186,7 +186,7 @@ public class EnterpriseChefApiExpectTest extends BaseChefApiExpectTest<Enterpris
             .build()), //
             HttpResponse.builder().statusCode(404).build());
 
-      Group group = Group.builder().groupname("admins").client("abiquo").group("admins").user("nacx").build();
+      Group group = Group.builder("admins").client("abiquo").group("admins").user("nacx").build();
       api.updateGroup(group);
    }
 

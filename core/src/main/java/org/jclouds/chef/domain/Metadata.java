@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.util.Map;
@@ -199,25 +200,25 @@ public class Metadata {
 
    }
 
-   private String license;
-   private String maintainer;
-   private Map<String, String> suggestions;
-   private Map<String, String> dependencies;
+   private final String license;
+   private final String maintainer;
+   private final Map<String, String> suggestions;
+   private final Map<String, String> dependencies;
    @SerializedName("maintainer_email")
-   private String maintainerEmail;
-   private Map<String, String> conflicting;
-   private String description;
-   private Map<String, String> providing;
-   private Map<String, String> platforms;
-   private String version;
-   private Map<String, String> recipes;
-   private Map<String, String> replacing;
-   private String name;
-   private Map<String, String> groupings;
+   private final String maintainerEmail;
+   private final Map<String, String> conflicting;
+   private final String description;
+   private final Map<String, String> providing;
+   private final Map<String, String> platforms;
+   private final String version;
+   private final Map<String, String> recipes;
+   private final Map<String, String> replacing;
+   private final String name;
+   private final Map<String, String> groupings;
    @SerializedName("long_description")
-   private String longDescription;
-   private Map<String, Attribute> attributes;
-   private Map<String, String> recommendations;
+   private final String longDescription;
+   private final Map<String, Attribute> attributes;
+   private final Map<String, String> recommendations;
 
    @ConstructorProperties({ "license", "maintainer", "suggestions", "dependencies", "maintainer_email", "conflicting",
          "description", "providing", "platforms", "version", "recipes", "replacing", "name", "groupings",
@@ -230,22 +231,21 @@ public class Metadata {
          @Nullable Map<String, String> recommendations) {
       this.license = license;
       this.maintainer = maintainer;
-      this.suggestions = suggestions == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(suggestions);
-      this.dependencies = dependencies == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(dependencies);
+      this.suggestions = copyOfOrEmpty(suggestions);
+      this.dependencies = copyOfOrEmpty(dependencies);
       this.maintainerEmail = maintainerEmail;
-      this.conflicting = conflicting == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(conflicting);
+      this.conflicting = copyOfOrEmpty(conflicting);
       this.description = description;
-      this.providing = providing == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(providing);
-      this.platforms = platforms == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(platforms);
+      this.providing = copyOfOrEmpty(providing);
+      this.platforms = copyOfOrEmpty(platforms);
       this.version = version;
-      this.recipes = recipes == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(recipes);
-      this.replacing = replacing == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(replacing);
+      this.recipes = copyOfOrEmpty(recipes);
+      this.replacing = copyOfOrEmpty(replacing);
       this.name = name;
-      this.groupings = groupings == null ? ImmutableMap.<String, String> of() : ImmutableMap.copyOf(groupings);
+      this.groupings = copyOfOrEmpty(groupings);
       this.longDescription = longDescription;
-      this.attributes = attributes == null ? ImmutableMap.<String, Attribute> of() : ImmutableMap.copyOf(attributes);
-      this.recommendations = recommendations == null ? ImmutableMap.<String, String> of() : ImmutableMap
-            .copyOf(recommendations);
+      this.attributes = copyOfOrEmpty(attributes);
+      this.recommendations = copyOfOrEmpty(recommendations);
    }
 
    public String getLicense() {

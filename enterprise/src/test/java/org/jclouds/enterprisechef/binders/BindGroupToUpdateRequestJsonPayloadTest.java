@@ -65,14 +65,14 @@ public class BindGroupToUpdateRequestJsonPayloadTest {
 
    public void testBindOnlyName() throws IOException {
       HttpRequest request = HttpRequest.builder().method("POST").endpoint(URI.create("http://localhost")).build();
-      HttpRequest newRequest = binder.bindToRequest(request, Group.builder().groupname("foo").build());
+      HttpRequest newRequest = binder.bindToRequest(request, Group.builder("foo").build());
 
       String payload = Strings2.toStringAndClose(newRequest.getPayload().getInput());
       assertEquals(payload, "{\"groupname\":\"foo\",\"actors\":{\"clients\":[],\"groups\":[],\"users\":[]}}");
    }
 
    public void testBindNameAndLists() throws IOException {
-      Group group = Group.builder().groupname("foo").client("nacx-validator").group("admins").user("nacx").build();
+      Group group = Group.builder("foo").client("nacx-validator").group("admins").user("nacx").build();
 
       HttpRequest request = HttpRequest.builder().method("POST").endpoint(URI.create("http://localhost")).build();
       HttpRequest newRequest = binder.bindToRequest(request, group);

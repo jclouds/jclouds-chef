@@ -80,13 +80,13 @@ public class Client {
       }
    }
 
-   private X509Certificate certificate;
+   private final X509Certificate certificate;
    @SerializedName("private_key")
-   private PrivateKey privateKey;
-   private String orgname;
-   private String clientname;
-   private String name;
-   private boolean validator;
+   private final PrivateKey privateKey;
+   private final String orgname;
+   private final String clientname;
+   private final String name;
+   private final boolean validator;
 
    @ConstructorProperties({ "certificate", "orgname", "clientname", "name", "validator", "private_key" })
    protected Client(X509Certificate certificate, String orgname, String clientname, String name, boolean validator,
@@ -178,7 +178,8 @@ public class Client {
    @Override
    public String toString() {
       return "Client [name=" + name + ", clientname=" + clientname + ", orgname=" + orgname + ", isValidator="
-            + validator + ", certificate=" + certificate + ", privateKey=" + (privateKey != null) + "]";
+            + validator + ", certificate=" + certificate + ", privateKey=" + (privateKey == null ? "not " : "")
+            + "present]";
    }
 
 }

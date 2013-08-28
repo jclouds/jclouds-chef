@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.net.URI;
@@ -69,16 +70,15 @@ public class UploadSandbox {
       }
    }
 
-   private URI uri;
-   private Map<List<Byte>, ChecksumStatus> checksums;
+   private final URI uri;
+   private final Map<List<Byte>, ChecksumStatus> checksums;
    @SerializedName("sandbox_id")
-   private String sandboxId;
+   private final String sandboxId;
 
    @ConstructorProperties({ "uri", "checksums", "sandbox_id" })
    protected UploadSandbox(URI uri, @Nullable Map<List<Byte>, ChecksumStatus> checksums, String sandboxId) {
       this.uri = uri;
-      this.checksums = checksums == null ? ImmutableMap.<List<Byte>, ChecksumStatus> of() : ImmutableMap
-            .copyOf(checksums);
+      this.checksums = copyOfOrEmpty(checksums);
       this.sandboxId = sandboxId;
    }
 

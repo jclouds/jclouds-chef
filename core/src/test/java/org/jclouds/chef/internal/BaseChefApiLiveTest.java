@@ -119,10 +119,9 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
             .build();
 
       // Create a new cookbook
-      CookbookVersion cookbook = CookbookVersion.builder() //
-            .cookbookName(PREFIX) //
-            .version("0.0.0") //
-            .metadata(metadata).rootFile(Resource.builder().fromPayload(content).build()) //
+      CookbookVersion cookbook = CookbookVersion.builder(PREFIX, "0.0.0") //
+            .metadata(metadata) //
+            .rootFile(Resource.builder().fromPayload(content).build()) //
             .build();
 
       // upload the cookbook to the remote server
@@ -131,15 +130,15 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
 
    public void testListCookbooks() throws Exception {
       Set<String> cookbookNames = api.listCookbooks();
-      assertFalse(cookbookNames.isEmpty());
+      assertFalse(cookbookNames.isEmpty(), "No cookbooks were found");
 
       for (String cookbookName : cookbookNames) {
          Set<String> versions = api.getVersionsOfCookbook(cookbookName);
-         assertFalse(versions.isEmpty());
+         assertFalse(versions.isEmpty(), "There are no versions of the cookbook: " + cookbookName);
 
          for (String version : api.getVersionsOfCookbook(cookbookName)) {
             CookbookVersion cookbook = api.getCookbook(cookbookName, version);
-            assertNotNull(cookbook);
+            assertNotNull(cookbook, "Could not get cookbook: " + cookbookName);
          }
       }
    }
@@ -147,7 +146,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(dependsOnMethods = "testListCookbooks")
    public void testListCookbookVersionsWithChefService() throws Exception {
       Iterable<? extends CookbookVersion> cookbooks = chefService.listCookbookVersions();
-      assertFalse(isEmpty(cookbooks));
+      assertFalse(isEmpty(cookbooks), "No cookbooks were found");
    }
 
    @Test(dependsOnMethods = "testListCookbookVersionsWithChefService")
@@ -158,13 +157,12 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
                .addAll(cookbook.getFiles()).addAll(cookbook.getLibraries()).addAll(cookbook.getSuppliers())
                .addAll(cookbook.getRecipes()).addAll(cookbook.getResources()).addAll(cookbook.getRootFiles())
                .addAll(cookbook.getTemplates()).build()) {
-            try {
-               InputStream stream = api.getResourceContents(resource);
-               byte[] md5 = asByteSource(stream).hash(md5()).asBytes();
-               assertEquals(md5, resource.getChecksum());
-            } catch (NullPointerException e) {
-               fail("resource not found: " + resource);
-            }
+
+            InputStream stream = api.getResourceContents(resource);
+            assertNotNull(cookbook, "Resource contents are null for resource: " + resource.getName());
+
+            byte[] md5 = asByteSource(stream).hash(md5()).asBytes();
+            assertEquals(md5, resource.getChecksum());
          }
       }
    }
@@ -172,13 +170,13 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(dependsOnMethods = "testCreateNewCookbook")
    public void testUpdateCookbook() throws Exception {
       CookbookVersion cookbook = api.getCookbook(PREFIX, "0.0.0");
-      assertNotNull(cookbook);
-      assertNotNull(api.updateCookbook(PREFIX, "0.0.0", cookbook));
+      assertNotNull(cookbook, "Cookbook not found: " + PREFIX);
+      assertNotNull(api.updateCookbook(PREFIX, "0.0.0", cookbook), "Updated cookbook was null");
    }
 
    @Test(dependsOnMethods = { "testCreateNewCookbook", "testUpdateCookbook" })
    public void testDeleteCookbook() throws Exception {
-      assertNotNull(api.deleteCookbook(PREFIX, "0.0.0"));
+      assertNotNull(api.deleteCookbook(PREFIX, "0.0.0"), "Deleted cookbook was null");
    }
 
    @Test
@@ -204,7 +202,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testListNodes() throws Exception {
       Set<String> nodes = api.listNodes();
-      assertNotNull(nodes);
+      assertNotNull(nodes, "No nodes were found");
    }
 
    @Test(dependsOnMethods = "testCreateRole")
@@ -213,7 +211,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
       api.createNode(Node.builder().name(PREFIX).runListElement("role[" + PREFIX + "]").environment("_default").build());
       node = api.getNode(PREFIX);
       // TODO check recipes
-      assertNotNull(node);
+      assertNotNull(node, "Created node should not be null");
       Set<String> nodes = api.listNodes();
       assertTrue(nodes.contains(PREFIX), String.format("node %s not in %s", PREFIX, nodes));
    }
@@ -229,7 +227,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testListRoles() throws Exception {
       Set<String> roles = api.listRoles();
-      assertNotNull(roles);
+      assertNotNull(roles, "Role list was null");
    }
 
    @Test
@@ -237,7 +235,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
       api.deleteRole(PREFIX);
       api.createRole(Role.builder().name(PREFIX).runListElement("recipe[java]").build());
       role = api.getRole(PREFIX);
-      assertNotNull(role);
+      assertNotNull(role, "Created role should not be null");
       assertEquals(role.getName(), PREFIX);
       assertEquals(role.getRunList(), Collections.singleton("recipe[java]"));
    }
@@ -253,7 +251,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testListDatabags() throws Exception {
       Set<String> databags = api.listDatabags();
-      assertNotNull(databags);
+      assertNotNull(databags, "Data bag list was null");
    }
 
    @Test
@@ -265,7 +263,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(dependsOnMethods = "testCreateDatabagItem")
    public void testListDatabagItems() throws Exception {
       Set<String> databagItems = api.listDatabagItems(PREFIX);
-      assertNotNull(databagItems);
+      assertNotNull(databagItems, "Data bag item list was null");
    }
 
    @Test(dependsOnMethods = "testCreateDatabag")
@@ -274,7 +272,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
       config.setProperty("foo", "bar");
       api.deleteDatabagItem(PREFIX, PREFIX);
       databagItem = api.createDatabagItem(PREFIX, new DatabagItem("config", json.toJson(config)));
-      assertNotNull(databagItem);
+      assertNotNull(databagItem, "Created data bag item should not be null");
       assertEquals(databagItem.getId(), "config");
 
       // The databagItem json contains extra keys: (the name and the type if the
@@ -297,7 +295,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testListSearchIndexes() throws Exception {
       Set<String> indexes = api.listSearchIndexes();
-      assertNotNull(indexes);
+      assertNotNull(indexes, "The index list should not be null");
       assertTrue(indexes.contains("node"));
       assertTrue(indexes.contains("client"));
       assertTrue(indexes.contains("role"));
@@ -306,7 +304,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testSearchNodes() throws Exception {
       SearchResult<? extends Node> results = api.searchNodes();
-      assertNotNull(results);
+      assertNotNull(results, "Node result list should not be null");
    }
 
    @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateNode" })
@@ -334,7 +332,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testSearchClients() throws Exception {
       SearchResult<? extends Client> results = api.searchClients();
-      assertNotNull(results);
+      assertNotNull(results, "Client result list should not be null");
    }
 
    @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateClient" })
@@ -362,7 +360,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test
    public void testSearchRoles() throws Exception {
       SearchResult<? extends Role> results = api.searchRoles();
-      assertNotNull(results);
+      assertNotNull(results, "Role result list should not be null");
    }
 
    @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateRole" })
@@ -390,7 +388,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateDatabagItem" })
    public void testSearchDatabag() throws Exception {
       SearchResult<? extends DatabagItem> results = api.searchDatabag(PREFIX);
-      assertNotNull(results);
+      assertNotNull(results, "Data bag item result list should not be null");
    }
 
    @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateDatabagItem" })
@@ -418,7 +416,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(expectedExceptions = ResourceNotFoundException.class, dependsOnMethods = "testListSearchIndexes")
    public void testSearchDatabagNotFound() throws Exception {
       SearchResult<? extends DatabagItem> results = api.searchDatabag("whoopie");
-      assertNotNull(results);
+      assertNotNull(results, "Data bag item result list should not be null");
    }
 
    @Test
@@ -426,7 +424,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
       api.deleteEnvironment(PREFIX);
       api.createEnvironment(Environment.builder().name(PREFIX).description(PREFIX).build());
       Environment env = api.getEnvironment(PREFIX);
-      assertNotNull(env);
+      assertNotNull(env, "Created environment should not be null");
       assertEquals(env.getName(), PREFIX);
       assertEquals(env.getDescription(), PREFIX);
    }
@@ -434,14 +432,14 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    @Test(dependsOnMethods = "testCreateEnvironment")
    public void testListEnvironment() {
       Set<String> envList = api.listEnvironments();
-      assertNotNull(envList);
+      assertNotNull(envList, "Environment list was null");
       assertTrue(envList.contains(PREFIX));
    }
 
    @Test(dependsOnMethods = "testCreateEnvironment")
    public void testSearchEnvironments() throws Exception {
       SearchResult<? extends Environment> results = api.searchEnvironments();
-      assertNotNull(results);
+      assertNotNull(results, "Environment result list was null");
    }
 
    @Test(dependsOnMethods = { "testListSearchIndexes", "testCreateEnvironment" })
@@ -487,7 +485,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
 
       try {
          Client client = clientApi.getClient(identity);
-         assertNotNull(client);
+         assertNotNull(client, "Client not found: " + identity);
       } finally {
          try {
             Closeables.close(clientApi, true);

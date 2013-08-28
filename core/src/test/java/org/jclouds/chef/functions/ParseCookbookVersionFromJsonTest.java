@@ -98,9 +98,7 @@ public class ParseCookbookVersionFromJsonTest {
             .build());
 
       CookbookVersion expected = CookbookVersion
-            .builder()
-            .cookbookName("apache-chef-demo")
-            .version("0.0.0")
+            .builder("apache-chef-demo", "0.0.0")
             .metadata(Metadata.builder() //
                   .license("Apache v2.0") //
                   .maintainer("Your Name") //

@@ -170,8 +170,7 @@ public class ChefApiTest extends BaseAsyncApiTest<ChefApi> {
       Invokable<?, ?> method = method(ChefApi.class, "updateCookbook", String.class, String.class,
             CookbookVersion.class);
       GeneratedHttpRequest httpRequest = processor.apply(Invocation.create(method,
-            ImmutableList.<Object> of("cookbook", "1.0.1",
-                  CookbookVersion.builder().version("1.0.1").cookbookName("cookbook").build())));
+            ImmutableList.<Object> of("cookbook", "1.0.1", CookbookVersion.builder("cookbook", "1.0.1").build())));
 
       assertRequestLineEquals(httpRequest, "PUT http://localhost:4000/cookbooks/cookbook/1.0.1 HTTP/1.1");
       assertNonPayloadHeadersEqual(httpRequest, "Accept: application/json\nX-Chef-Version: " + ChefApi.VERSION
@@ -332,8 +331,10 @@ public class ChefApiTest extends BaseAsyncApiTest<ChefApi> {
 
    public void testCreateNode() throws SecurityException, NoSuchMethodException, IOException {
       Invokable<?, ?> method = method(ChefApi.class, "createNode", Node.class);
-      GeneratedHttpRequest httpRequest = processor.apply(Invocation.create(method,
-            ImmutableList.<Object> of(Node.builder().name("testnode").runListElement("recipe[java]").environment("_default").build())));
+      GeneratedHttpRequest httpRequest = processor.apply(Invocation.create(
+            method,
+            ImmutableList.<Object> of(Node.builder().name("testnode").runListElement("recipe[java]")
+                  .environment("_default").build())));
 
       assertRequestLineEquals(httpRequest, "POST http://localhost:4000/nodes HTTP/1.1");
       assertNonPayloadHeadersEqual(httpRequest, "Accept: application/json\nX-Chef-Version: " + ChefApi.VERSION
@@ -353,8 +354,10 @@ public class ChefApiTest extends BaseAsyncApiTest<ChefApi> {
 
    public void testUpdateNode() throws SecurityException, NoSuchMethodException, IOException {
       Invokable<?, ?> method = method(ChefApi.class, "updateNode", Node.class);
-      GeneratedHttpRequest httpRequest = processor.apply(Invocation.create(method,
-            ImmutableList.<Object> of(Node.builder().name("testnode").runListElement("recipe[java]").environment("_default").build())));
+      GeneratedHttpRequest httpRequest = processor.apply(Invocation.create(
+            method,
+            ImmutableList.<Object> of(Node.builder().name("testnode").runListElement("recipe[java]")
+                  .environment("_default").build())));
 
       assertRequestLineEquals(httpRequest, "PUT http://localhost:4000/nodes/testnode HTTP/1.1");
       assertNonPayloadHeadersEqual(httpRequest, "Accept: application/json\nX-Chef-Version: " + ChefApi.VERSION

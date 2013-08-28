@@ -16,6 +16,7 @@
  */
 package org.jclouds.chef.domain;
 
+import static org.jclouds.chef.util.CollectionUtils.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.beans.ConstructorProperties;
@@ -106,16 +107,16 @@ public class Attribute {
       }
    }
 
-   private String required;
-   private boolean calculated;
-   private Set<String> choice;
+   private final String required;
+   private final boolean calculated;
+   private final Set<String> choice;
    @SerializedName("default")
-   private JsonBall defaultValue;
-   private String type;
-   private List<String> recipes;
+   private final JsonBall defaultValue;
+   private final String type;
+   private final List<String> recipes;
    @SerializedName("display_name")
-   private String displayName;
-   private String description;
+   private final String displayName;
+   private final String description;
 
    @ConstructorProperties({ "required", "calculated", "choice", "default", "type", "recipes", "display_name",
          "description" })
@@ -123,10 +124,10 @@ public class Attribute {
          String type, @Nullable List<String> recipes, String displayName, String description) {
       this.required = required;
       this.calculated = calculated;
-      this.choice = choice == null ? ImmutableSet.<String> of() : ImmutableSet.copyOf(choice);
+      this.choice = copyOfOrEmpty(choice);
       this.defaultValue = defaultValue;
       this.type = type;
-      this.recipes = recipes == null ? ImmutableList.<String> of() : ImmutableList.copyOf(recipes);
+      this.recipes = copyOfOrEmpty(recipes);
       this.displayName = displayName;
       this.description = description;
    }

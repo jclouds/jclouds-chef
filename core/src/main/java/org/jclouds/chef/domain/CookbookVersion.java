@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.util.Set;
@@ -33,8 +34,8 @@ import com.google.gson.annotations.SerializedName;
  * @author Ignasi Barrera
  */
 public class CookbookVersion {
-   public static Builder builder() {
-      return new Builder();
+   public static Builder builder(String name, String version) {
+      return new Builder(name, version);
    }
 
    public static class Builder {
@@ -50,6 +51,11 @@ public class CookbookVersion {
       private String version;
       private ImmutableSet.Builder<Resource> recipes = ImmutableSet.builder();
       private ImmutableSet.Builder<Resource> rootFiles = ImmutableSet.builder();
+
+      public Builder(String name, String version) {
+         this.cookbookName = checkNotNull(name, "name");
+         this.version = checkNotNull(version, "version");
+      }
 
       public Builder cookbookName(String cookbookName) {
          this.cookbookName = checkNotNull(cookbookName, "cookbookName");
@@ -163,21 +169,21 @@ public class CookbookVersion {
       }
    }
 
-   private String name;
-   private Set<Resource> definitions;
-   private Set<Attribute> attributes;
-   private Set<Resource> files;
-   private Metadata metadata;
-   private Set<Resource> providers;
+   private final String name;
+   private final Set<Resource> definitions;
+   private final Set<Attribute> attributes;
+   private final Set<Resource> files;
+   private final Metadata metadata;
+   private final Set<Resource> providers;
    @SerializedName("cookbook_name")
-   private String cookbookName;
-   private Set<Resource> resources;
-   private Set<Resource> templates;
-   private Set<Resource> libraries;
-   private String version;
-   private Set<Resource> recipes;
+   private final String cookbookName;
+   private final Set<Resource> resources;
+   private final Set<Resource> templates;
+   private final Set<Resource> libraries;
+   private final String version;
+   private final Set<Resource> recipes;
    @SerializedName("root_files")
-   private Set<Resource> rootFiles;
+   private final Set<Resource> rootFiles;
 
    // internal
    @SerializedName("json_class")
@@ -192,18 +198,18 @@ public class CookbookVersion {
          @Nullable Set<Resource> resources, @Nullable Set<Resource> templates, @Nullable Set<Resource> libraries,
          String version, @Nullable Set<Resource> recipes, @Nullable Set<Resource> rootFiles) {
       this.name = name;
-      this.definitions = definitions == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(definitions);
-      this.attributes = attributes == null ? ImmutableSet.<Attribute> of() : ImmutableSet.copyOf(attributes);
-      this.files = files == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(files);
+      this.definitions = copyOfOrEmpty(definitions);
+      this.attributes = copyOfOrEmpty(attributes);
+      this.files = copyOfOrEmpty(files);
       this.metadata = metadata;
-      this.providers = providers == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(providers);
+      this.providers = copyOfOrEmpty(providers);
       this.cookbookName = cookbookName;
-      this.resources = resources == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(resources);
-      this.templates = templates == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(templates);
-      this.libraries = libraries == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(libraries);
+      this.resources = copyOfOrEmpty(resources);
+      this.templates = copyOfOrEmpty(templates);
+      this.libraries = copyOfOrEmpty(libraries);
       this.version = version;
-      this.recipes = recipes == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(recipes);
-      this.rootFiles = rootFiles == null ? ImmutableSet.<Resource> of() : ImmutableSet.copyOf(rootFiles);
+      this.recipes = copyOfOrEmpty(recipes);
+      this.rootFiles = copyOfOrEmpty(rootFiles);
    }
 
    public String getName() {

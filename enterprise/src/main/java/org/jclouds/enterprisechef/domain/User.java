@@ -82,18 +82,18 @@ public class User {
       }
    }
 
-   private String username;
+   private final String username;
    @SerializedName("first_name")
-   private String firstName;
+   private final String firstName;
    @SerializedName("middle_name")
-   private String middleName;
+   private final String middleName;
    @SerializedName("last_name")
-   private String lastName;
+   private final String lastName;
    @SerializedName("display_name")
-   private String displayName;
-   private String email;
+   private final String displayName;
+   private final String email;
    @SerializedName("public_key")
-   private PublicKey publicKey;
+   private final PublicKey publicKey;
 
    @ConstructorProperties({ "username", "first_name", "middle_name", "last_name", "display_name", "email", "public_key" })
    protected User(String username, String firstName, String middleName, String lastName, String displayName,

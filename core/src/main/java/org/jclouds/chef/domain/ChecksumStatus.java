@@ -52,9 +52,9 @@ public class ChecksumStatus {
       }
    }
 
-   private URI url;
+   private final URI url;
    @SerializedName("needs_upload")
-   private boolean needsUpload;
+   private final boolean needsUpload;
 
    @ConstructorProperties({ "url", "needs_upload" })
    protected ChecksumStatus(URI url, boolean needsUpload) {
@@ -97,7 +97,7 @@ public class ChecksumStatus {
          return false;
       return true;
    }
-   
+
    @Override
    public String toString() {
       return "ChecksumStatus [needsUpload=" + needsUpload + ", url=" + url + "]";

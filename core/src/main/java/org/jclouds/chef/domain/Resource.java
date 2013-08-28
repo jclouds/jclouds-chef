@@ -70,6 +70,7 @@ public class Resource {
       }
 
       public Builder fromPayload(FilePayload payload) {
+         checkNotNull(payload, "payload");
          this.name(payload.getRawContent().getName());
          this.checksum(payload.getContentMetadata().getContentMD5());
          this.path(payload.getRawContent().getPath());
@@ -81,11 +82,11 @@ public class Resource {
       }
    }
 
-   private String name;
-   private URI url;
-   private byte[] checksum;
-   private String path;
-   private String specificity;
+   private final String name;
+   private final URI url;
+   private final byte[] checksum;
+   private final String path;
+   private final String specificity;
 
    @ConstructorProperties({ "name", "url", "checksum", "path", "specificity" })
    protected Resource(String name, URI url, byte[] checksum, String path, String specificity) {

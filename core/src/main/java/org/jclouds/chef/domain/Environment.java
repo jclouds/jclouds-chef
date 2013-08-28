@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.util.Map;
@@ -90,32 +91,30 @@ public class Environment {
       }
    }
 
-   private String name;
+   private final String name;
    @SerializedName("default_attributes")
-   private Map<String, JsonBall> attributes;
+   private final Map<String, JsonBall> attributes;
    @SerializedName("override_attributes")
-   private Map<String, JsonBall> overrideAttributes;
-   private String description;
+   private final Map<String, JsonBall> overrideAttributes;
+   private final String description;
    @SerializedName("cookbook_versions")
-   private Map<String, String> cookbookVersions;
+   private final Map<String, String> cookbookVersions;
 
    // internal
    @SerializedName("json_class")
-   private String _jsonClass = "Chef::Environment";
+   private final String _jsonClass = "Chef::Environment";
    @SerializedName("chef_type")
-   private String _chefType = "environment";
+   private final String _chefType = "environment";
 
    @ConstructorProperties({ "name", "default_attributes", "override_attributes", "description", "cookbook_versions" })
    protected Environment(String name, @Nullable Map<String, JsonBall> attributes,
          @Nullable Map<String, JsonBall> overrideAttributes, String description,
          @Nullable Map<String, String> cookbookVersions) {
       this.name = name;
-      this.attributes = attributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap.copyOf(attributes);
-      this.overrideAttributes = overrideAttributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap
-            .copyOf(overrideAttributes);
+      this.attributes = copyOfOrEmpty(attributes);
+      this.overrideAttributes = copyOfOrEmpty(overrideAttributes);
       this.description = description;
-      this.cookbookVersions = cookbookVersions == null ? ImmutableMap.<String, String> of() : ImmutableMap
-            .copyOf(cookbookVersions);
+      this.cookbookVersions = copyOfOrEmpty(cookbookVersions);
    }
 
    public String getName() {

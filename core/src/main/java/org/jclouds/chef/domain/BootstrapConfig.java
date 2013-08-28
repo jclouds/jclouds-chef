@@ -66,13 +66,14 @@ public class BootstrapConfig {
       }
 
       public BootstrapConfig build() {
-         return new BootstrapConfig(runList.build(), Optional.fromNullable(environment), Optional.fromNullable(attribtues));
+         return new BootstrapConfig(runList.build(), Optional.fromNullable(environment),
+               Optional.fromNullable(attribtues));
       }
    }
 
-   private List<String> runList;
-   private Optional<String> environment;
-   private Optional<JsonBall> attribtues;
+   private final List<String> runList;
+   private final Optional<String> environment;
+   private final Optional<JsonBall> attribtues;
 
    protected BootstrapConfig(List<String> runList, Optional<String> environment, Optional<JsonBall> attribtues) {
       this.runList = checkNotNull(runList, "runList");

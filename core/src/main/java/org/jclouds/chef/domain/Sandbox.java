@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.util.Date;
@@ -87,20 +88,20 @@ public class Sandbox {
    }
 
    @SerializedName("_rev")
-   private String rev;
+   private final String rev;
    @SerializedName("is_completed")
-   private boolean isCompleted;
+   private final boolean isCompleted;
    @SerializedName("create_time")
-   private Date createTime;
-   private Set<String> checksums;
-   private String name;
-   private String guid;
+   private final Date createTime;
+   private final Set<String> checksums;
+   private final String name;
+   private final String guid;
 
    // internal
    @SerializedName("json_class")
-   private String _jsonClass = "Chef::Sandbox";
+   private final String _jsonClass = "Chef::Sandbox";
    @SerializedName("chef_type")
-   private String _chefType = "sandbox";
+   private final String _chefType = "sandbox";
 
    @ConstructorProperties({ "_rev", "is_completed", "create_time", "checksums", "name", "guid" })
    protected Sandbox(String rev, boolean isCompleted, Date createTime, @Nullable Set<String> checksums, String name,
@@ -108,7 +109,7 @@ public class Sandbox {
       this.rev = rev;
       this.isCompleted = isCompleted;
       this.createTime = createTime;
-      this.checksums = checksums == null ? ImmutableSet.<String> of() : ImmutableSet.copyOf(checksums);
+      this.checksums = copyOfOrEmpty(checksums);
       this.name = name;
       this.guid = guid;
    }

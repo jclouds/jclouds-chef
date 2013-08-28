@@ -17,6 +17,7 @@
 package org.jclouds.chef.domain;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.chef.util.CollectionUtils.copyOfOrEmpty;
 
 import java.beans.ConstructorProperties;
 import java.util.List;
@@ -92,31 +93,29 @@ public class Role {
       }
    }
 
-   private String name;
-   private String description;
+   private final String name;
+   private final String description;
    @SerializedName("override_attributes")
-   private Map<String, JsonBall> overrideAttributes;
+   private final Map<String, JsonBall> overrideAttributes;
    @SerializedName("default_attributes")
-   private Map<String, JsonBall> defaultAttributes;
+   private final Map<String, JsonBall> defaultAttributes;
    @SerializedName("run_list")
-   private List<String> runList;
+   private final List<String> runList;
 
    // internal
    @SerializedName("json_class")
-   private String _jsonClass = "Chef::Role";
+   private final String _jsonClass = "Chef::Role";
    @SerializedName("chef_type")
-   private String _chefType = "role";
+   private final String _chefType = "role";
 
    @ConstructorProperties({ "name", "description", "default_attributes", "run_list", "override_attributes" })
    protected Role(String name, String description, @Nullable Map<String, JsonBall> defaultAttributes,
          @Nullable List<String> runList, @Nullable Map<String, JsonBall> overrideAttributes) {
       this.name = name;
       this.description = description;
-      this.defaultAttributes = defaultAttributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap
-            .copyOf(defaultAttributes);
-      this.runList = runList == null ? ImmutableList.<String> of() : ImmutableList.copyOf(runList);
-      this.overrideAttributes = overrideAttributes == null ? ImmutableMap.<String, JsonBall> of() : ImmutableMap
-            .copyOf(overrideAttributes);
+      this.defaultAttributes = copyOfOrEmpty(defaultAttributes);
+      this.runList = copyOfOrEmpty(runList);
+      this.overrideAttributes = copyOfOrEmpty(overrideAttributes);
    }
 
    public String getName() {
@@ -127,11 +126,11 @@ public class Role {
       return description;
    }
 
-   public Map<String, JsonBall> getOverride() {
+   public Map<String, JsonBall> getOverrideAttributes() {
       return overrideAttributes;
    }
 
-   public Map<String, JsonBall> getDefault() {
+   public Map<String, JsonBall> getDefaultAttributes() {
       return defaultAttributes;
    }
 
@@ -202,8 +201,8 @@ public class Role {
 
    @Override
    public String toString() {
-      return "Role [name=" + name + ", description=" + description + ", defaultA=" + defaultAttributes + ", override="
-            + overrideAttributes + ", runList=" + runList + "]";
+      return "Role [name=" + name + ", description=" + description + ", defaultAttributes=" + defaultAttributes
+            + ", overrideAttributes=" + overrideAttributes + ", runList=" + runList + "]";
    }
 
 }
