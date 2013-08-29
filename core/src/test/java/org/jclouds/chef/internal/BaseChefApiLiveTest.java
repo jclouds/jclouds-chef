@@ -159,7 +159,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
                .addAll(cookbook.getTemplates()).build()) {
 
             InputStream stream = api.getResourceContents(resource);
-            assertNotNull(cookbook, "Resource contents are null for resource: " + resource.getName());
+            assertNotNull(stream, "Resource contents are null for resource: " + resource.getName());
 
             byte[] md5 = asByteSource(stream).hash(md5()).asBytes();
             assertEquals(md5, resource.getChecksum());
