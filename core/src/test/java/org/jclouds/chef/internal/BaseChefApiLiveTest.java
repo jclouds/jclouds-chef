@@ -475,7 +475,7 @@ public abstract class BaseChefApiLiveTest<A extends ChefApi> extends BaseChefLiv
    public void testListEnvironmentNodes() {
       api.deleteNode(ENV_NODE);
       api.createNode(Node.builder().name(ENV_NODE).runListElement("role[" + PREFIX + "]").environment(PREFIX).build());
-      node = api.getNode(PREFIX);
+      node = api.getNode(ENV_NODE);
       assertNotNull(node, "Created node should not be null");
       Set<String> nodeList = api.listEnvironmentNodes(PREFIX);
       assertTrue(!nodeList.isEmpty());
