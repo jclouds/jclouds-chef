@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 package org.jclouds.chef.compute;
-
 import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.getLast;
 import static org.jclouds.chef.predicates.CookbookVersionPredicates.containsRecipe;
-import static org.jclouds.chef.predicates.CookbookVersionPredicates.containsRecipes;
 import static org.jclouds.compute.options.TemplateOptions.Builder.runScript;
 import static org.jclouds.reflect.Reflection2.typeToken;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,14 +69,8 @@ public class ChefComputeServiceLiveTest extends BaseComputeServiceIntegratedChef
          view.getChefService().updateBootstrapConfigForGroup(group, bootstrap);
          assertEquals(view.getChefService().getRunListForGroup(group), runList);
       } else {
-         assert false : String.format("recipe %s not in %s", recipe, cookbookVersions);
+         fail(String.format("recipe %s not in %s", recipe, cookbookVersions));
       }
-
-      // TODO move this to a unit test
-      assert any(cookbookVersions, containsRecipe("apache2::mod_proxy"));
-      assert any(cookbookVersions, containsRecipes("apache2", "apache2::mod_proxy", "apache2::mod_proxy_http"));
-      assert !any(cookbookVersions, containsRecipe("apache2::bar"));
-      assert !any(cookbookVersions, containsRecipe("foo::bar"));
    }
 
    @Test(dependsOnMethods = "testCanUpdateRunList")
@@ -94,9 +88,8 @@ public class ChefComputeServiceLiveTest extends BaseComputeServiceIntegratedChef
          URI uri = URI.create("http://" + getLast(node.getPublicAddresses()));
          InputStream content = computeContext.utils().http().get(uri);
          String string = Strings2.toStringAndClose(content);
-         assert string.indexOf("It works!") >= 0 : string;
+         assertTrue(string.indexOf("It works!") >= 0, string);
       }
-
    }
 
    @AfterClass(groups = { "integration", "live" })
