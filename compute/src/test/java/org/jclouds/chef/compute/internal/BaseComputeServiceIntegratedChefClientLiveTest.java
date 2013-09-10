@@ -50,7 +50,7 @@ public abstract class BaseComputeServiceIntegratedChefClientLiveTest extends Bas
    protected TemplateBuilderSpec template;
    protected LoginCredentials loginCredentials = LoginCredentials.builder().user("root").build();
 
-   // isolate tests from eachother, as default credentialStore is static
+   // isolate tests from each other, as default credentialStore is static
    protected Module credentialStoreModule = new CredentialStoreModule(new CopyInputStreamInputSupplierMap(
          new ConcurrentHashMap<String, InputSupplier<InputStream>>()));
 

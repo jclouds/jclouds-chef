@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package org.jclouds.chef.compute;
+
 import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.getLast;
@@ -88,7 +89,8 @@ public class ChefComputeServiceLiveTest extends BaseComputeServiceIntegratedChef
          URI uri = URI.create("http://" + getLast(node.getPublicAddresses()));
          InputStream content = computeContext.utils().http().get(uri);
          String string = Strings2.toStringAndClose(content);
-         assertTrue(string.indexOf("It works!") >= 0, string);
+         assertTrue(string.indexOf("It works!") >= 0,
+               String.format("The default Apache page was not found: %s", string));
       }
    }
 
