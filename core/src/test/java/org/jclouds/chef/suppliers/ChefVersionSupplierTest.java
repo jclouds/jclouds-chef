@@ -31,6 +31,8 @@ public class ChefVersionSupplierTest {
 
    public void testReturnsDefaultVersion() {
       assertEquals(new ChefVersionSupplier("15").get(), DEFAULT_VERSION);
+      assertEquals(new ChefVersionSupplier("0").get(), DEFAULT_VERSION);
+      assertEquals(new ChefVersionSupplier("0.").get(), DEFAULT_VERSION);
    }
 
    public void testReturnsMajorVersionIfNotZero() {

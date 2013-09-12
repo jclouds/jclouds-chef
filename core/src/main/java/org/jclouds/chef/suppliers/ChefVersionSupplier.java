@@ -16,6 +16,7 @@
  */
 package org.jclouds.chef.suppliers;
 
+import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.regex.Matcher;
@@ -57,7 +58,10 @@ public class ChefVersionSupplier implements Supplier<Integer> {
 
    @Override
    public Integer get() {
-      Pattern versionPattern = Pattern.compile("(\\d+)\\.(\\d+)(\\.\\d+)*");
+      // Old versions of Chef have versions like 0.9.x, 0.10.x, but newer
+      // versions are in the format 10.x.y, 11.x.y
+      Pattern versionPattern = Pattern.compile("(?:0\\.(\\d+)|(\\d+)\\.\\d+)(?:\\.\\d)*");
+
       Matcher m = versionPattern.matcher(apiVersion);
       if (!m.matches()) {
          logger.warn("Configured version does not match the standard version pattern. Assuming version %s",
@@ -65,12 +69,7 @@ public class ChefVersionSupplier implements Supplier<Integer> {
          return DEFAULT_VERSION;
       }
 
-      int major = Integer.parseInt(m.group(1));
-      int minor = Integer.parseInt(m.group(2));
-
-      // Old versions of Chef have versions like 0.9.x, 0.10.x, but newer versions
-      // are in the format 10.x.y, 11.x.y
-      return major == 0? minor : major;
+      return Integer.valueOf(firstNonNull(m.group(1), m.group(2)));
    }
 
 }
