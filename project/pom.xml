@@ -50,9 +50,9 @@
     <url>https://issues.apache.org/jira/browse/JCLOUDS</url>
   </issueManagement>
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-jclouds-chef.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-jclouds-chef.git</developerConnection>
-    <url>https://git-wip-us.apache.org/repos/asf?p=incubator-jclouds-chef.git</url>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/jclouds-chef.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/jclouds-chef.git</developerConnection>
+    <url>https://git-wip-us.apache.org/repos/asf?p=jclouds-chef.git</url>
     <tag>HEAD</tag>
   </scm>
   <repositories>
