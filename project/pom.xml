@@ -30,6 +30,7 @@
   <packaging>pom</packaging>
   <name>Apache jclouds Chef :: Project</name>
   <description>jclouds Chef parent POM for Maven configuration</description>
+  <inceptionYear>2009</inceptionYear>
 
   <licenses>
     <license>
