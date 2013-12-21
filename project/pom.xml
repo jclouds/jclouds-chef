@@ -362,7 +362,7 @@
       <id>chef-project</id>
       <activation>
         <file>
-          <!-- only in the jclouds-project module -->
+          <!-- only in the chef-project module -->
           <exists>src/etc/header.txt</exists>
         </file>
       </activation>
