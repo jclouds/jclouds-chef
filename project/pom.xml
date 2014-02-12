@@ -297,6 +297,7 @@
         <configuration>
           <configLocation>resources/checkstyle.xml</configLocation>
           <violationSeverity>warning</violationSeverity>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
         </configuration>
       </plugin>
     </plugins>
