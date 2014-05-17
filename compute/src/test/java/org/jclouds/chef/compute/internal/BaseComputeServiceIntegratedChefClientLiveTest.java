@@ -30,7 +30,6 @@ import org.jclouds.compute.ComputeServiceContext;
 import org.jclouds.compute.domain.TemplateBuilderSpec;
 import org.jclouds.domain.LoginCredentials;
 import org.jclouds.domain.LoginCredentials.Builder;
-import org.jclouds.io.CopyInputStreamInputSupplierMap;
 import org.jclouds.rest.config.CredentialStoreModule;
 import org.jclouds.sshj.config.SshjSshClientModule;
 import org.testng.annotations.AfterClass;
@@ -38,6 +37,7 @@ import org.testng.annotations.AfterClass;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.common.io.ByteSource;
 import com.google.common.io.Closeables;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Module;
@@ -51,8 +51,7 @@ public abstract class BaseComputeServiceIntegratedChefClientLiveTest extends Bas
    protected LoginCredentials loginCredentials = LoginCredentials.builder().user("root").build();
 
    // isolate tests from each other, as default credentialStore is static
-   protected Module credentialStoreModule = new CredentialStoreModule(new CopyInputStreamInputSupplierMap(
-         new ConcurrentHashMap<String, InputSupplier<InputStream>>()));
+   protected Module credentialStoreModule = new CredentialStoreModule(new ConcurrentHashMap<String, ByteSource>());
 
    private String computeProvider;
 
