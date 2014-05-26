@@ -41,7 +41,7 @@
   </licenses>
 
   <properties>
-    <jclouds.version>1.7.3-SNAPSHOT</jclouds.version>
+    <jclouds.version>1.7.4-SNAPSHOT</jclouds.version>
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
     <sourceReleaseAssemblyDescriptor>source-release-zip-tar</sourceReleaseAssemblyDescriptor>
