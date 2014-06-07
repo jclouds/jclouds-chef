@@ -42,9 +42,6 @@ import com.google.common.io.Closeables;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Module;
 
-/**
- * @author Adrian Cole
- */
 public abstract class BaseComputeServiceIntegratedChefClientLiveTest extends BaseViewLiveTest<ChefContext> {
 
    protected TemplateBuilderSpec template;

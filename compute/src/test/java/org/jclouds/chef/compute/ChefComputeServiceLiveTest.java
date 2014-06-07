@@ -47,10 +47,6 @@ import org.testng.annotations.Test;
 
 import com.google.common.reflect.TypeToken;
 
-/**
- * 
- * @author Adrian Cole
- */
 @Test(groups = "live", testName = "ChefComputeServiceLiveTest")
 public class ChefComputeServiceLiveTest extends BaseComputeServiceIntegratedChefClientLiveTest {
 
