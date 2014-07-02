@@ -1,8 +1,6 @@
 jclouds Chef
 ============
 
-[![Build Status](https://jclouds.ci.cloudbees.com/buildStatus/icon?job=jclouds-chef)](https://jclouds.ci.cloudbees.com/job/jclouds-chef/)
-
 This is the jclouds Chef API. It provides access to the different flavours of the Chef server API:
 
 * [Chef community](http://www.opscode.com/chef/)
