@@ -16,50 +16,49 @@
  */
 package org.jclouds.chef.strategy.internal;
 
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.util.concurrent.Futures.allAsList;
 import static com.google.common.util.concurrent.Futures.getUnchecked;
 
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-import javax.annotation.Resource;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.jclouds.Constants;
+import com.google.common.base.Function;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.inject.Inject;
 import org.jclouds.chef.ChefApi;
 import org.jclouds.chef.config.ChefProperties;
 import org.jclouds.chef.domain.CookbookVersion;
 import org.jclouds.chef.strategy.ListCookbookVersions;
 import org.jclouds.logging.Logger;
 
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.inject.Inject;
+import javax.annotation.Resource;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 
 @Singleton
 public class ListCookbookVersionsImpl implements ListCookbookVersions {
 
    protected final ChefApi api;
-   protected final ListeningExecutorService userExecutor;
+   protected final ListeningExecutorService chefUserExecutor;
    @Resource
    @Named(ChefProperties.CHEF_LOGGER)
    protected Logger logger = Logger.NULL;
 
    @Inject
-   ListCookbookVersionsImpl(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor, ChefApi api) {
-      this.userExecutor = checkNotNull(userExecutor, "userExecuor");
+   ListCookbookVersionsImpl(@Named(ChefProperties.CHEF_USER_THREADS) ListeningExecutorService chefUserExecutor, ChefApi api) {
+      this.chefUserExecutor = checkNotNull(chefUserExecutor, "chefUserExecutor");
       this.api = checkNotNull(api, "api");
    }
 
    @Override
    public Iterable<? extends CookbookVersion> execute() {
-      return execute(userExecutor);
+      return execute(chefUserExecutor);
    }
 
    @Override

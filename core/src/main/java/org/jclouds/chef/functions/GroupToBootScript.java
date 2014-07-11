@@ -54,13 +54,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.TypeLiteral;
 
 /**
- * 
+ *
  * Generates a bootstrap script relevant for a particular group
  */
 @Singleton
 public class GroupToBootScript implements Function<String, Statement> {
    private static final Pattern newLinePattern = Pattern.compile("(\\r\\n)|(\\n)");
-   
+
    @VisibleForTesting
    static final Type RUN_LIST_TYPE = new TypeLiteral<Map<String, List<String>>>() {
    }.getType();
