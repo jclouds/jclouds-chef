@@ -28,7 +28,6 @@ import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.jclouds.Constants;
 import org.jclouds.chef.ChefApi;
 import org.jclouds.chef.config.ChefProperties;
 import org.jclouds.chef.domain.Environment;
@@ -45,20 +44,21 @@ import com.google.inject.Inject;
 public class ListEnvironmentsImpl implements ListEnvironments {
 
    protected final ChefApi api;
-   protected final ListeningExecutorService userExecutor;
+   protected final ListeningExecutorService chefUserExecutor;
    @Resource
    @Named(ChefProperties.CHEF_LOGGER)
    protected Logger logger = Logger.NULL;
 
    @Inject
-   ListEnvironmentsImpl(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor, ChefApi api) {
-      this.userExecutor = checkNotNull(userExecutor, "userExecuor");
+   ListEnvironmentsImpl(@Named(ChefProperties.CHEF_USER_THREADS) ListeningExecutorService chefUserExecutor,
+         ChefApi api) {
+      this.chefUserExecutor = checkNotNull(chefUserExecutor, "chefUserExecutor");
       this.api = checkNotNull(api, "api");
    }
 
    @Override
    public Iterable<? extends Environment> execute() {
-      return execute(userExecutor);
+      return execute(chefUserExecutor);
    }
 
    @Override
@@ -78,7 +78,8 @@ public class ListEnvironmentsImpl implements ListEnvironments {
                      }
                   });
                }
-            }));
+            }
+      ));
 
       logger.trace(String.format("deleting environments: %s", Joiner.on(',').join(toGet)));
       return getUnchecked(futures);

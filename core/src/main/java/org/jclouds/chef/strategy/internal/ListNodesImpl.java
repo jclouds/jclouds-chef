@@ -28,7 +28,6 @@ import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.jclouds.Constants;
 import org.jclouds.chef.ChefApi;
 import org.jclouds.chef.config.ChefProperties;
 import org.jclouds.chef.domain.Node;
@@ -45,20 +44,21 @@ import com.google.inject.Inject;
 public class ListNodesImpl implements ListNodes {
 
    protected final ChefApi api;
-   protected final ListeningExecutorService userExecutor;
+   protected final ListeningExecutorService chefUserExecutor;
    @Resource
    @Named(ChefProperties.CHEF_LOGGER)
    protected Logger logger = Logger.NULL;
 
    @Inject
-   ListNodesImpl(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor, ChefApi api) {
-      this.userExecutor = checkNotNull(userExecutor, "userExecuor");
+   ListNodesImpl(@Named(ChefProperties.CHEF_USER_THREADS) ListeningExecutorService chefUserExecutor,
+         ChefApi api) {
+      this.chefUserExecutor = checkNotNull(chefUserExecutor, "userExecutor");
       this.api = checkNotNull(api, "api");
    }
 
    @Override
    public Iterable<? extends Node> execute() {
-      return execute(userExecutor);
+      return execute(chefUserExecutor);
    }
 
    @Override

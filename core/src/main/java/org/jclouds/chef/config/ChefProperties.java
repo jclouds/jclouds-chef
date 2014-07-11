@@ -107,4 +107,12 @@ public interface ChefProperties {
     */
    public static final String CHEF_USE_OMNIBUS = "chef.use-omnibus";
 
+   /**
+    * The name from the pool thread used by jclouds-chef
+    * <p>
+    * This property must be set prior to running the
+    * {@link ChefService#createBootstrapScriptForGroup(String)} method.
+    */
+   public static final String CHEF_USER_THREADS = "chef.user-threads";
+
 }

@@ -21,44 +21,43 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.util.concurrent.Futures.allAsList;
 import static com.google.common.util.concurrent.Futures.getUnchecked;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import javax.annotation.Resource;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.jclouds.Constants;
+import com.google.inject.Inject;
 import org.jclouds.chef.ChefApi;
 import org.jclouds.chef.config.ChefProperties;
 import org.jclouds.chef.domain.Node;
 import org.jclouds.chef.strategy.ListNodesInEnvironment;
 import org.jclouds.logging.Logger;
 
+import javax.annotation.Resource;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.inject.Inject;
 
 @Singleton
 public class ListNodesInEnvironmentImpl implements ListNodesInEnvironment {
 
    protected final ChefApi api;
-   protected final ListeningExecutorService userExecutor;
+   protected final ListeningExecutorService chefUserExecutor;
    @Resource
    @Named(ChefProperties.CHEF_LOGGER)
    protected Logger logger = Logger.NULL;
 
    @Inject
-   ListNodesInEnvironmentImpl(@Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor, ChefApi api) {
-      this.userExecutor = checkNotNull(userExecutor, "userExecuor");
+   ListNodesInEnvironmentImpl(
+         @Named(ChefProperties.CHEF_USER_THREADS) ListeningExecutorService chefUserExecutor, ChefApi api) {
+      this.chefUserExecutor = checkNotNull(chefUserExecutor, "chefUserExecutor");
       this.api = checkNotNull(api, "api");
    }
 
    @Override
    public Iterable<? extends Node> execute(String environmentName) {
-      return execute(userExecutor, environmentName);
+      return execute(chefUserExecutor, environmentName);
    }
 
    @Override
@@ -66,7 +65,8 @@ public class ListNodesInEnvironmentImpl implements ListNodesInEnvironment {
       return execute(executor, environmentName, api.listNodesInEnvironment(environmentName));
    }
 
-   private Iterable<? extends Node> execute(final ListeningExecutorService executor, String environmentName, Iterable<String> toGet) {
+   private Iterable<? extends Node> execute(final ListeningExecutorService executor, String environmentName,
+         Iterable<String> toGet) {
       ListenableFuture<List<Node>> futures = allAsList(transform(toGet, new Function<String, ListenableFuture<Node>>() {
          @Override
          public ListenableFuture<Node> apply(final String input) {

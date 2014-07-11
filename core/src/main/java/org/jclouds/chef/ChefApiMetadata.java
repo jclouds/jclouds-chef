@@ -23,6 +23,7 @@ import static org.jclouds.Constants.PROPERTY_TIMEOUTS_PREFIX;
 import static org.jclouds.chef.config.ChefProperties.CHEF_BOOTSTRAP_DATABAG;
 import static org.jclouds.chef.config.ChefProperties.CHEF_UPDATE_GEMS;
 import static org.jclouds.chef.config.ChefProperties.CHEF_UPDATE_GEM_SYSTEM;
+import static org.jclouds.chef.config.ChefProperties.CHEF_USER_THREADS;
 import static org.jclouds.chef.config.ChefProperties.CHEF_USE_OMNIBUS;
 
 import java.net.URI;
@@ -37,6 +38,7 @@ import org.jclouds.rest.internal.BaseHttpApiMetadata;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
 
+
 /**
  * Implementation of {@link ApiMetadata} for OpsCode's Chef api.
  */
@@ -46,6 +48,8 @@ public class ChefApiMetadata extends BaseHttpApiMetadata<ChefApi> {
     * The default Chef Server API version to use.
     */
    public static final String DEFAULT_API_VERSION = "0.10.8";
+
+   public static final int DEFAULT_USER_THREADS = 30;
 
    @Override
    public Builder toBuilder() {
@@ -76,6 +80,7 @@ public class ChefApiMetadata extends BaseHttpApiMetadata<ChefApi> {
       properties.setProperty(CHEF_UPDATE_GEM_SYSTEM, "false");
       properties.setProperty(CHEF_UPDATE_GEMS, "false");
       properties.setProperty(CHEF_USE_OMNIBUS, "true");
+      properties.setProperty(CHEF_USER_THREADS, DEFAULT_USER_THREADS + "");
       return properties;
    }
 
@@ -92,7 +97,7 @@ public class ChefApiMetadata extends BaseHttpApiMetadata<ChefApi> {
                .defaultProperties(ChefApiMetadata.defaultProperties())
                .view(ChefContext.class)
                .defaultModules(
-                     ImmutableSet.<Class<? extends Module>> of(ChefHttpApiModule.class, ChefParserModule.class,
+                     ImmutableSet.<Class<? extends Module>>of (ChefHttpApiModule.class, ChefParserModule.class,
                            ChefBootstrapModule.class, JMXOhaiModule.class));
       }
 
