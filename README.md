@@ -1,16 +1,8 @@
 jclouds Chef
 ============
 
-This is the jclouds Chef API. It provides access to the different flavours of the Chef server API:
+This reposiroty is **DEPRECATED**. Since jclouds 1.8 all code has been moved to the
+jclouds main Git repository. Please, refer to:
 
-* [Chef community](http://www.opscode.com/chef/)
-* [Enterprise Chef](http://www.opscode.com/enterprise-chef/)
-
-It currently supports versions **0.9**, **0.10** and **11** of the standard Chef server APIs, and an initial
-and very basic (still in progress) implementation of the user and organization API of the Enterprise Chef.
-
-Also provides a set of utility methods to combine Chef features with the jclouds Compute service, allowing
-users to customize the bootstrap process and manage the configuration of the deployed nodes.
-
-You will find all documentation in www.jclouds.org
-
+* https://git-wip-us.apache.org/repos/asf?p=jclouds.git;a=summary
+* https://github.com/jclouds/jclouds (GitHub mirror)
