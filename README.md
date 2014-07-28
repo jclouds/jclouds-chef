@@ -10,5 +10,5 @@ Please refer to the appropriate modules there and submit contributions against t
   * https://git-wip-us.apache.org/repos/asf/jclouds.git/apis/chef?p=jclouds.git;a=tree;f=apis/chef
   * https://github.com/jclouds/jclouds/tree/master/apis/chef
 * **Enterprise Chef:**
-  * https://git-wip-us.apache.org/repos/asf/jclouds.git/apis/chef?p=jclouds.git;a=tree;f=providers/enterprisechef
-  * https://github.com/jclouds/jclouds/tree/master/providers/enterprisechef
+  * https://git-wip-us.apache.org/repos/asf/jclouds.git/apis/chef?p=jclouds.git;a=tree;f=providers/enterprise-chef
+  * https://github.com/jclouds/jclouds/tree/master/providers/enterprise-chef
