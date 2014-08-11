@@ -85,10 +85,10 @@ public class ParseClientFromJsonTest {
             .name("adriancole-jcloudstest").isValidator(false).privateKey(privateKey).build();
 
       byte[] encrypted = ByteStreams.toByteArray(new RSAEncryptingPayload(new JCECrypto(), Payloads.newPayload("fooya"), user
-            .getCertificate().getPublicKey()));
+            .getCertificate().getPublicKey()).openStream());
 
       assertEquals(
-            ByteStreams.toByteArray(new RSADecryptingPayload(new JCECrypto(), Payloads.newPayload(encrypted), user.getPrivateKey())),
+            ByteStreams.toByteArray(new RSADecryptingPayload(new JCECrypto(), Payloads.newPayload(encrypted), user.getPrivateKey()).openStream()),
             "fooya".getBytes());
 
       assertEquals(
