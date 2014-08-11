@@ -141,13 +141,13 @@ public class BaseChefService implements ChefService {
    @Override
    public byte[] encrypt(InputSupplier<? extends InputStream> supplier) throws IOException {
       return ByteStreams.toByteArray(new RSAEncryptingPayload(crypto, Payloads.newPayload(supplier.getInput()), privateKey
-                  .get()));
+                  .get()).openStream());
    }
 
    @Override
    public byte[] decrypt(InputSupplier<? extends InputStream> supplier) throws IOException {
       return ByteStreams.toByteArray(new RSADecryptingPayload(crypto, Payloads.newPayload(supplier.getInput()), privateKey
-                  .get()));
+                  .get()).openStream());
    }
 
    @VisibleForTesting

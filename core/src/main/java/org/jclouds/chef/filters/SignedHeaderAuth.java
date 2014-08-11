@@ -190,7 +190,7 @@ public class SignedHeaderAuth implements HttpRequestFilter {
 
    public String sign(String toSign) {
       try {
-         byte[] encrypted = toByteArray(new RSAEncryptingPayload(crypto, Payloads.newStringPayload(toSign), supplyKey.get()));
+         byte[] encrypted = toByteArray(new RSAEncryptingPayload(crypto, Payloads.newStringPayload(toSign), supplyKey.get()).openStream());
          return base64().encode(encrypted);
       } catch (IOException e) {
          throw new HttpException("error signing request", e);
